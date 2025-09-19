@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Role-Based Dashboard</title>
+    <style>
+        /* Global styling */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background-color: #FFE082; /* Soft yellow from palette */
+            color: #333;
+        }
+
+        h1 {
+            background-color: #64B5F6; /* Blue header */
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin: 0;
+            font-size: 2rem;
+            letter-spacing: 1px;
+        }
+
+        h2 {
+            color: #444;
+            margin-bottom: 10px;
+        }
+
+        /* Section cards */
+        .section {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+            padding: 15px;
+            margin: 15px auto;
+            width: 85%;
+            max-width: 700px;
+        }
+
+        /* Role selector */
+        select {
+            display: block;
+            margin: 20px auto;
+            padding: 10px;
+            font-size: 1rem;
+            border: 2px solid #64B5F6;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+        }
+
+        /* Buttons */
+        button {
+            background-color: #FF894F; /* Orange from palette */
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1rem;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            margin: 5px;
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        button:hover {
+            background-color: #E57373; /* Pinkish red hover */
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>College Companion Portal</h1>
+
+    <select id="roleSelect" onchange="loadDashboard()">
+        <option value="">-- Select Role --</option>
+        <option value="student">Student</option>
+        <option value="rep">Class Representative</option>
+        <option value="teacher">Teacher</option>
+    </select>
+
+    <div id="dashboard"></div>
+
+    <script>
+        // Simulated MongoDB Data
+        const announcements = [
+            { title: "Welcome", content: "Classes start next week", postedBy: "teacher", class: "CSE-A" },
+            { title: "Assignment Help", content: "Join the help session tomorrow", postedBy: "rep", class: "CSE-A" }
+        ];
+
+        const materials = [
+            { title: "Unit 1 Notes", fileUrl: "unit1.pdf", uploadedBy: "teacher", class: "CSE-A" }
+        ];
+
+        function loadDashboard() {
+            const role = document.getElementById("roleSelect").value;
+            let html = `<h2 style="text-align:center;">${role.toUpperCase()} Dashboard</h2>`;
+
+            // Announcements
+            html += `<div class="section"><h3>Announcements</h3>`;
+            announcements.forEach(a => {
+                html += `<p><b>${a.title}</b>: ${a.content} (by ${a.postedBy})</p>`;
+            });
+            html += `</div>`;
+
+            // Course Materials
+            html += `<div class="section"><h3>Course Materials</h3>`;
+            materials.forEach(m => {
+                html += `<p>${m.title} - <a href="${m.fileUrl}" target="_blank">Download</a> (by ${m.uploadedBy})</p>`;
+            });
+            html += `</div>`;
+
+            // Rep Actions
+            if (role === "rep") {
+                html += `<div class="section"><h3>Rep Actions</h3>
+                    <button onclick="alert('Post Announcement')">Post Announcement</button>
+                    <button onclick="alert('Upload Material')">Upload Material</button>
+                </div>`;
+            }
+
+            // Teacher Actions
+            if (role === "teacher") {
+                html += `<div class="section"><h3>Teacher Actions</h3>
+                    <button onclick="alert('Post Announcement')">Post Announcement</button>
+                    <button onclick="alert('Upload Course Material')">Upload Course Material</button>
+                    <button onclick="alert('View Engagement')">View Engagement</button>
+                </div>`;
+            }
+
+            document.getElementById("dashboard").innerHTML = html;
+        }
+    </script>
+
+</body>
+</html>

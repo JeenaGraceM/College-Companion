@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confessions</title>
+    <link rel="stylesheet" href="confessions.css">
+</head>
+<body>
+    <header>
+        <h1>Campus Connect</h1>
+        <nav class="navbar">
+            <a href="confessionsIndex.html">Lost & Found</a>
+            <a href="confessions.html">Confessions</a>
+            <a href="polls.html">Daily Polls</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <div class="form-section">
+            <h2>Post an Anonymous Confession</h2>
+            <form id="confession-form">
+                <label for="confession-text">Your Confession:</label>
+                <textarea id="confession-text" name="confession-text" required></textarea>
+                <button type="submit">Post Confession</button>
+            </form>
+        </div>
+
+        <div class="content-section">
+            <h2>Recent Confessions</h2>
+            <div id="confession-container">
+                <!-- Demo Confessions will be rendered here -->
+                <div class="confession">
+                    <p>I secretly use the library as a nap spot between classes. The bean bags are a blessing.</p>
+                </div>
+                <div class="confession">
+                    <p>I still get lost in the science building even though I've been here for three years.</p>
+                </div>
+                <div class="confession">
+                    <p>I'm convinced the squirrels on campus are plotting something. They're too organized.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="confessions.js"></script>
+</body>
+</html>

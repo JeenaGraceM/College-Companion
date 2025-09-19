@@ -1,0 +1,151 @@
+loginPage.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Glassmorphism Login</title>
+  <link rel="stylesheet" href="loginPage.css" />
+</head>
+<body>
+
+  <div id="form-wrapper">
+
+    <!-- LOGIN FORM -->
+    <div id="login-form" class="form-container active">
+      <div class="glass">
+        
+        <!-- Heading -->
+        <h2>
+          Hi, Welcome! <span style="font-size: 24px;">👋</span>
+        </h2>
+
+        <!-- Email -->
+        <div>
+          <input type="email" placeholder="Your email" required>
+        </div>
+
+        <!-- Password -->
+        <div class="password-container">
+          <input type="password" id="login-password" placeholder="Password" required>
+          <button type="button" id="togglePassword">👁</button>
+        </div>
+
+        <!-- Remember + Forgot -->
+        <div class="flex-between">
+          <label class="checkbox-container">
+            <input type="checkbox">
+            Remember me
+          </label>
+          <a href="#">Forgot password?</a>
+        </div>
+
+        <!-- Log in Button -->
+        <button onclick="window.location.href='homePage.html'">
+          Log in
+        </button>
+
+        <!-- Register -->
+        <p class="form-footer">
+          Don't have an account?
+          <a href="#" onclick="showSignup()">Sign up</a>
+        </p>
+
+      </div>
+    </div>
+
+    <!-- SIGNUP FORM -->
+    <div id="signup-form" class="form-container">
+      <div class="glass">
+        
+        <h2>
+          Create Account <span style="font-size: 24px;">✨</span>
+        </h2>
+
+        <!-- Full Name -->
+        <div>
+          <input type="text" placeholder="Full Name" required>
+        </div>
+
+        <!-- Date of Birth -->
+        <div>
+          <input type="date" required>
+        </div>
+
+        <!-- Email -->
+        <div>
+          <input type="email" placeholder="Your email" required>
+        </div>
+
+        <!-- Password -->
+        <div>
+          <input type="password" placeholder="Password" required>
+        </div>
+
+        <!-- Confirm Password -->
+        <div>
+          <input type="password" placeholder="Confirm Password" required>
+        </div>
+
+        <!-- Role -->
+        <div>
+          <select required>
+            <option value="" disabled selected>Select user type</option>
+            <option value="student">Student</option>
+            <option value="rep">Representative</option>
+            <option value="teacher">Teacher</option>
+            <option value="doctor">Dcotor</option>
+          </select>
+        </div>
+
+        <!-- Engineering Branch Dropdown -->
+        <div>
+          <select required>
+            <option value="" disabled selected>Select Your Engineering Branch</option>
+            <option value="cse">Computer Science & Engineering</option>
+            <option value="ece">Electronics & Communication Engineering</option>
+            <option value="me">Mechanical Engineering</option>
+            <option value="ce">Civil Engineering</option>
+            <option value="ee">Electrical Engineering</option>
+            <option value="it">Information Technology</option>
+            <option value="ae">Automobile Engineering</option>
+            <option value="nb">No Branch</option>
+          </select>
+        </div>
+
+
+        <!-- id Number -->
+        <div>
+          <input type="text" placeholder="Roll Number/ id" required>
+        </div>
+
+        <!-- Sign Up Button -->
+        <button>
+          Sign Up
+        </button>
+
+        <!-- Switch to Sign In -->
+        <p class="form-footer">
+          Already have an account?
+          <a href="#" onclick="showLogin()">Sign in</a>
+        </p>
+
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    const wrapper = document.getElementById("form-wrapper");
+    function showSignup() { wrapper.classList.add("show-signup"); }
+    function showLogin() { wrapper.classList.remove("show-signup"); }
+
+    document.getElementById("togglePassword").addEventListener("click", () => {
+      const passwordField = document.getElementById("login-password");
+      const type = passwordField.type === "password" ? "text" : "password";
+      passwordField.type = type;
+    });
+  </script>
+
+</body>
+</html>

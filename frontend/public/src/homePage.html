@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CampusConnect</title>
+  <link rel="stylesheet" href="homePage.css" />
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav>
+    <div class="font-bold text-lg text-white ">CampusConnect</div>
+    <ul>
+      <li><a href="homePage.html" class="hover:text-[#ffd8d9]">Home</a></li>
+      <li><a href="notes&papers/notes.html" class="hover:text-[#ffd8d9]">Notes</a></li>
+      <li><a href="confession&polls/confessionsIndex.html" class="hover:text-[#ffd8d9]">Lost & Found</a></li>
+      <li><a href="confession&polls/confessions.html" class="hover:text-[#ffd8d9]">Confessions</a></li>
+      <li><a href="announcements/announcementDashboard.html" class="hover:text-[#ffd8d9]">Dashboard</a></li>
+      <li><a href="health/healthDashboard.html" class="hover:text-[#ffd8d9]">Doctors</a></li>
+      <li><a href="confession&polls/polls.html" class="hover:text-[#ffd8d9]">Polls</a></li>
+    </ul>
+    
+
+    <div class="flex items-center gap-3">
+      <a href="profile.html">
+        <img src="https://i.pravatar.cc/40?img=3" alt="User" class="user-avatar" />
+      </a>
+    </div>
+  </nav>
+  <div><br></div>
+
+  <!-- Bannner -->
+  <section>
+    <div class="hero" style="background-image: url('bg.png');">
+      <div class="hero-overlay">
+        <div class="hero-content">
+          <h2>Welcome to CampusConnect</h2>
+          <p>
+            Your one-stop platform for campus life — academics, events, and community, all in one place.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <section class="section">
+    <div class="cards-container">
+      <!-- Left Card -->
+      <div id="left-card" class="card card-pink-border">
+        <!-- Notice -->
+        <div id="notice">
+          <h3 class="text-xl font-semibold mb-2">Example Notice</h3>
+          <p class="text-gray-700">"Library timings extended till 9 PM"</p>
+        </div>
+
+        <!-- Lost & Found -->
+        <div id="lost-found" style="display:none;">
+          <div class="lost-found-container">
+            <!-- details -->
+            <div class="lost-found-details">
+              <h3 class="text-xl font-semibold mb-2">Lost & Found</h3>
+              <p class="text-gray-700">Lost: Black wallet near canteen.</p>
+            </div>
+
+            <!-- pic -->
+            <div class="lost-found-image">
+              <img src="assets/wallet.png" alt="Lost Wallet">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Card -->
+      <div id="poll" class="card card-green-border">
+        <h3 class="text-xl font-semibold mb-3">Fav Hangout Spot?</h3>
+        <div class="poll-option" data-votes="0">
+          Library <span class="poll-percentage"></span>
+        </div>
+        <div class="poll-option" data-votes="0">
+          Garden <span class="poll-percentage"></span>
+        </div>
+        <div class="poll-option" data-votes="0">
+          Sports Ground <span class="poll-percentage"></span>
+        </div>
+        <button id="submitBtn" class="btn mt-4">
+          Submit
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Clubs Section -->
+  <section class="section">
+    <h2 class="text-2xl font-bold mb-6">Clubs & Communities</h2>
+    <div class="clubs-grid">
+      <!-- Card 1 -->
+      <a href="/clubs/tech-club" class="club-card" style="border: 3px solid #a6d7d7;">
+        <img src="assets/tech-club.jpg" alt="Tech Club">
+        <h3 class="text-lg font-semibold">Tech Club</h3>
+        <p class="text-sm text-gray-600">Join the innovators and builders.</p>
+      </a>
+
+      <!-- Card 2 -->
+      <a href="/clubs/drama-club" class="club-card" style="border: 3px solid #a4b4d4;">
+        <img src="assets/drama-club.jpg" alt="Drama Club">
+        <h3 class="text-lg font-semibold">Drama Club</h3>
+        <p class="text-sm text-gray-600">Express yourself on stage.</p>
+      </a>
+
+      <!-- Card 3 -->
+      <a href="/clubs/debate-club" class="club-card" style="border: 3px solid #f9e094;">
+        <img src="assets/debate-club.jpg" alt="Debate Club">
+        <h3 class="text-lg font-semibold">Debate Club</h3>
+        <p class="text-sm text-gray-600">Sharpen your thinking skills.</p>
+      </a>
+
+      <!-- Card 4 -->
+      <a href="/clubs/sports-club" class="club-card" style="border: 3px solid #f8ced9;">
+        <img src="assets/sports-club.jpg" alt="Sports Club">
+        <h3 class="text-lg font-semibold">Sports Club</h3>
+        <p class="text-sm text-gray-600">Stay active and competitive.</p>
+      </a>
+      
+      <!-- Card 5 -->
+      <a href="/clubs/ieee" class="club-card" style="border: 3px solid #a6d7d7;">
+        <img src="assets/ieee.jpg" alt="IEEE Student Branch">
+        <h3 class="text-lg font-semibold">IEEE Student Branch</h3>
+        <p class="text-sm text-gray-600">Advancing technology for humanity.</p>
+      </a>
+      
+      <!-- Card 6 -->
+      <a href="/clubs/iei" class="club-card" style="border: 3px solid #a4b4d4;">
+        <img src="assets/iei.jpg" alt="IEI Club">
+        <h3 class="text-lg font-semibold">IEI</h3>
+        <p class="text-sm text-gray-600">Institution of Engineers for excellence.</p>
+      </a>
+      
+      <!-- Card 7 -->
+      <a href="/clubs/iste" class="club-card" style="border: 3px solid #f9e094;">
+        <img src="assets/iste.jpg" alt="ISTE Club">
+        <h3 class="text-lg font-semibold">ISTE</h3>
+        <p class="text-sm text-gray-600">Promoting technical education and growth.</p>
+      </a>
+      
+      <!-- Card 8 -->
+      <a href="/clubs/music-club" class="club-card" style="border: 3px solid #f8ced9;">
+        <img src="assets/music-club.jpg" alt="Music Club">
+        <h3 class="text-lg font-semibold">Music Club</h3>
+        <p class="text-sm text-gray-600">Feel the rhythm, live the melody.</p>
+      </a>
+    </div>
+  </section>
+  
+  <!-- Explore Section -->
+  <section class="section">
+    <h2 class="text-xl font-semibold mb-6">Explore CampusConnect</h2>
+    <div class="explore-grid" >
+      <div class="explore-card" data-link="notes&papers/notes.html">
+        <img src="assets/notes.svg" alt="Notes">
+        <h3 class="font-semibold">Notes & Past Papers</h3>
+        <p class="text-sm text-gray-500">Access study materials and past exams</p>
+      </div>
+
+      <div class="explore-card" data-link="confession&polls/confessionsIndex.html">
+        <img src="assets/search.svg" alt="Lost and Found">
+        <h3 class="font-semibold">Lost & Found</h3>
+        <p class="text-sm text-gray-500">Find lost items or report found ones</p>
+      </div>
+
+      <div class="explore-card" data-link="confession&polls/confessions.html">
+        <img src="assets/confessions.svg" alt="Confessions">
+        <h3 class="font-semibold">Confessions</h3>
+        <p class="text-sm text-gray-500">Share anonymous thoughts and stories</p>
+      </div>
+
+      <div class="explore-card" data-link="announcements/announcementDashboard.html">
+        <img src="assets/dashboard.svg" alt="Dashboards">
+        <h3 class="font-semibold">Class Rep/Teacher Dashboards</h3>
+        <p class="text-sm text-gray-500">Manage classes and communicate with students</p>
+      </div>
+
+      <div class="explore-card" data-link="health/healthDashboard.html">
+        <img src="assets/nurse.svg" alt="Campus Doctors">
+        <h3 class="font-semibold">Campus Doctors</h3>
+        <p class="text-sm text-gray-500">Check availability of campus doctors and book slots.</p>
+      </div>
+
+      <div class="explore-card" data-link="confession&polls/polls.html">
+        <img src="assets/poll.svg" alt="Daily Poll">
+        <h3 class="font-semibold">Daily Poll/Question</h3>
+        <p class="text-sm text-gray-500">Participate in daily polls and discussions</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-grid">
+      <div>
+        <h4>CampusConnect</h4>
+        <p class="text-sm">
+          Your campus, your community — connecting students, faculty, and events in one hub.
+        </p>
+      </div>
+      <div>
+        <h5>Explore</h5>
+        <ul class="text-sm">
+          <li>Academics</li>
+          <li>Health</li>
+          <li>Social</li>
+          <li>Resources</li>
+        </ul>
+      </div>
+      <div>
+        <h5>About</h5>
+        <ul class="text-sm">
+          <li>About Us</li>
+          <li>Privacy Policy</li>
+          <li>Terms & Conditions</li>
+        </ul>
+      </div>
+      <div>
+        <h5>Contact</h5>
+        <ul class="text-sm">
+          <li>+91 98765 43210</li>
+          <li>support@campusconnect.com</li>
+          <li>TKMCE, Kollam</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-copyright">
+      © 2025 CampusConnect. All rights reserved.
+    </div>
+  </footer>
+
+  <script>
+    const options = document.querySelectorAll(".poll-option");
+    let selectedOption = null;
+
+    // Handle selecting an option
+    options.forEach(opt => {
+      opt.addEventListener("click", () => {
+        options.forEach(o => o.classList.remove("selected"));
+        opt.classList.add("selected");
+        selectedOption = opt;
+      });
+    });
+
+    // Handle poll submission
+    document.getElementById("submitBtn").addEventListener("click", () => {
+      if (!selectedOption) return alert("Please select an option!");
+
+      selectedOption.dataset.votes = parseInt(selectedOption.dataset.votes) + 1;
+
+      let totalVotes = Array.from(options)
+        .reduce((sum, o) => sum + parseInt(o.dataset.votes), 0);
+
+      options.forEach(o => {
+        let percent = Math.round((parseInt(o.dataset.votes) / totalVotes) * 100) || 0;
+        o.querySelector(".poll-percentage").textContent = percent + "%";
+      });
+
+      options.forEach(o => o.style.pointerEvents = "none");
+      document.getElementById("submitBtn").style.display = "none";
+    });
+
+    // Toggle Notice and Lost & Found every 5s
+    let showingNotice = true;
+
+    // Initialize correct display on page load
+    document.getElementById("notice").style.display = "block";
+    document.getElementById("lost-found").style.display = "none";
+
+    setInterval(() => {
+      document.getElementById("notice").style.display = showingNotice ? "none" : "block";
+      document.getElementById("lost-found").style.display = showingNotice ? "block" : "none";
+      showingNotice = !showingNotice;
+    }, 5000);
+
+    document.querySelectorAll(".explore-card").forEach(card => {
+      card.addEventListener("click", () => {
+        const link = card.getAttribute("data-link");
+        if (link) {
+          window.location.href = link;
+        }
+      });
+    });
+  </script>
+</body>
+</html>

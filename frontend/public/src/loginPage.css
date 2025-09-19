@@ -1,0 +1,207 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: url('bg.png') center/cover no-repeat;
+  min-height: 100vh;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Glassmorphism Effect */
+.glass {
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 12px;
+  padding: 32px;
+  width: 100%;
+  max-width: 380px;
+  box-sizing: border-box;
+}
+
+/* Form Container Styles */
+.form-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  max-width: 380px;
+  transform: translate(-50%, -50%);
+  transition: transform 0.5s ease, opacity 0.5s ease;
+  opacity: 0;
+}
+
+.form-container.active { 
+  opacity: 1; 
+}
+
+#login-form { 
+  transform: translate(-50%, -50%) translateX(0); 
+}
+
+#signup-form { 
+  transform: translate(-50%, -50%) translateX(100%); 
+}
+
+.show-signup #login-form {
+  transform: translate(-50%, -50%) translateX(-100%);
+  opacity: 0;
+}
+
+.show-signup #signup-form {
+  transform: translate(-50%, -50%) translateX(0);
+  opacity: 1;
+}
+
+/* Form Elements */
+h2 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #284b69;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 24px;
+  text-align: center;
+  justify-content: center;
+}
+
+/* Standardized Input Styles */
+input, select {
+  width: 100%;
+  background: white;
+  color: #333;
+  border-radius: 999px;
+  padding: 12px 16px;
+  border: none;
+  outline: none;
+  margin-bottom: 16px;
+  font-size: 14px;
+  box-sizing: border-box;
+  display: block;
+}
+
+/* Select Dropdown Styling */
+select {
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  background-size: 16px;
+}
+
+/* Password Toggle */
+.password-container {
+  position: relative;
+  width: 100%;
+}
+
+.password-container input {
+  padding-right: 40px;
+  width: 100%;
+}
+
+#togglePassword {
+  position: absolute;
+  right: 12px;
+  top: 25%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #666;
+  font-size: 16px;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Checkbox */
+.checkbox-container {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 14px;
+  color: white;
+  margin-bottom: 10px;
+  margin-top: 10px;
+}
+
+.checkbox-container input {
+  width: auto;
+  margin: 0;
+  accent-color: white;
+  flex-shrink: 0;
+}
+
+/* Links */
+a {
+  color: white;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Button */
+button {
+  width: 100%;
+  background: #284b69;
+  color: white;
+  font-weight: 600;
+  padding: 12px;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.3s;
+  font-size: 14px;
+  margin-top: 8px;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+/* Form Footer */
+.form-footer {
+  margin-top: 24px;
+  color: white;
+  font-size: 14px;
+  text-align: center;
+}
+
+.form-footer a {
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+/* Flex Utilities */
+.flex-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 480px) {
+  .glass {
+    padding: 24px;
+    margin: 0 16px;
+  }
+  
+  .form-container {
+    max-width: calc(100% - 32px);
+  }
+}

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Appointment Booking</title>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #fefedc;
+      padding: 20px;
+      margin: 0;
+    }
+
+    #calendar {
+      max-width: 650px;
+      margin: 20px auto;
+      background: white;
+      border-left: 8px solid #b3e4e2;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .fc-daygrid-day.fc-day-selected {
+      background-color: inherit !important;
+    }
+
+    .fc-daygrid-day.fc-day-selected.no-event {
+      background-color: #e0f7fa !important; 
+      border: 2px solid #0288d1 !important;
+    }
+
+    #popup {
+      display: none;
+      position: fixed;
+      top: 25%;
+      left: 50%;
+      transform: translate(-50%, -25%);
+      background: #fff;
+      border: 2px solid #b3e4e2;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+      z-index: 1000;
+      width: 300px;
+    }
+
+    #popup h3 {
+      margin-top: 0;
+    }
+
+    #popup label {
+      display: block;
+      margin: 8px 0;
+    }
+
+    button {
+      background-color: #b3e4e2;
+      color: #333;
+      border: none;
+      padding: 10px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+
+    button:hover {
+      background-color: #a18cd1;
+      color: white;
+    }
+
+    textarea {
+      width: 90%;
+      display: block;
+      margin: 10px auto;
+      font-size: 16px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      resize: vertical;
+    }
+
+    .snackbar {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #b3e4e2;
+      color: #333;
+      padding: 12px 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      z-index: 1001;
+      animation: fadeInOut 3s ease;
+    }
+
+    .snackbar.error {
+      background-color: #e57373;
+    }
+
+    @keyframes fadeInOut {
+      0% { opacity: 0; transform: translate(-50%, 20px); }
+      10% { opacity: 1; transform: translate(-50%, 0); }
+      90% { opacity: 1; }
+      100% { opacity: 0; transform: translate(-50%, 20px); }
+    }
+  </style>
+</head>
+
+<body>
+  <div id="doctor-name"></div>
+  <form id="appointment_booking">
+    <div id="calendar"></div>
+    <textarea id="appointment_info" placeholder="Enter appointment notes (optional)"></textarea>
+    <button id="book_appointment" type="submit">Book Appointment</button>
+  </form>
+
+  <div id="popup">
+    <h3 id="popup-date">Selected Date</h3>
+    <div id="checkbox-list"></div>
+    <button onclick="closePopup()">Close</button>
+    <button onclick="saveDate()">Save</button>
+  </div>
+
+  <script src="appointmentDetails.js"></script>
+</body>
+</html>

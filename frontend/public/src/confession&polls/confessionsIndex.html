@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lost & Found</title>
+    <link rel="stylesheet" href="confessions.css">
+</head>
+<body>
+    <header>
+        <h1>Campus Connect</h1>
+        <nav class="navbar">
+            <a href="confessionsIndex.html">Lost & Found</a>
+            <a href="confessions.html">Confessions</a>
+            <a href="polls.html">Daily Polls</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <div class="form-section">
+            <h2>Submit a Lost or Found Item</h2>
+            <form id="lost-found-form">
+                <label for="item-type">I have:</label>
+                <select id="item-type" name="item-type" required>
+                    <option value="Lost">Lost an item</option>
+                    <option value="Found">Found an item</option>
+                </select>
+                <label for="item-name">Item Name:</label>
+                <input type="text" id="item-name" name="item-name" required>
+                <label for="description">Description:</label>
+                <textarea id="description" name="description" required></textarea>
+                
+                <!-- New section for image uploads -->
+                <div class="image-upload-section">
+                    <label for="item-images">Upload Pictures (up to 5):</label>
+                    <div class="file-input-container">
+                        <input type="file" id="item-images" name="item-images" accept="image/*" multiple style="display:none;">
+                        <button type="button" id="custom-upload-btn">Choose Files</button>
+                    </div>
+                    <div id="image-preview-container" class="image-preview-container"></div>
+                </div>
+
+                <label for="contact-info">Contact Information:</label>
+                <input type="text" id="contact-info" name="contact-info" placeholder="Email or Phone Number" required>
+                <button type="submit">Submit</button>
+            </form>
+        </div>
+
+        <div class="content-section">
+            <h2>Recent Items</h2>
+            <div id="lost-found-container">
+                <!-- Demo Lost & Found items will be rendered here -->
+                <div class="lost-found-item">
+                    <h3>Lost: Water Bottle</h3>
+                    <p><strong>Description:</strong> Blue metal water bottle, left in the library on Tuesday.</p>
+                    <p><strong>Contact:</strong> jane.doe@school.edu</p>
+                </div>
+                <div class="lost-found-item">
+                    <h3>Found: Car Keys</h3>
+                    <p><strong>Description:</strong> A set of car keys with a red keychain, found near the student union.</p>
+                    <p><strong>Contact:</strong> john.smith@school.edu</p>
+                </div>
+                <div class="lost-found-item">
+                    <h3>Lost: Student ID</h3>
+                    <p><strong>Description:</strong> My student ID card with the name 'Alex Johnson' on it. Last seen near the cafeteria.</p>
+                    <p><strong>Contact:</strong> 555-1234</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="confessions.js"></script>
+</body>
+</html>

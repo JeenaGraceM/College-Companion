@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Profile</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f6fa;
+      display: flex;
+      justify-content: center;
+      padding: 20px;
+    }
+    .profile-card {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0px 4px 8px rgba(0,0,0,0.1);
+      text-align: center;
+      width: 300px;
+    }
+    .profile-pic {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid #007bff;
+    }
+    .upload-btn {
+      margin-top: 10px;
+      display: block;
+      background: #007bff;
+      color: white;
+      padding: 8px;
+      border-radius: 8px;
+      cursor: pointer;
+      text-align: center;
+    }
+    .upload-btn:hover {
+      background: #0056b3;
+    }
+    .details {
+      text-align: left;
+      margin-top: 15px;
+    }
+    .details p {
+      margin: 5px 0;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="profile-card">
+    <img id="profileImage" src="default-avatar.png" alt="Profile Picture" class="profile-pic">
+    <input type="file" id="upload" accept="image/*" style="display: none;">
+    <label for="upload" class="upload-btn">Upload Profile Picture</label>
+
+    <div class="details">
+      <p><strong>Name:</strong> <span id="name"></span></p>
+      <p><strong>Email:</strong> <span id="email"></span></p>
+      <p><strong>Phone:</strong> <span id="phone"></span></p>
+    </div>
+  </div>
+
+  <script>
+    // Load user details from localStorage
+    document.getElementById("name").textContent = localStorage.getItem("name") || "Not Set";
+    document.getElementById("email").textContent = localStorage.getItem("email") || "Not Set";
+    document.getElementById("phone").textContent = localStorage.getItem("phone") || "Not Set";
+
+    // Handle profile picture upload
+    const upload = document.getElementById("upload");
+    const profileImage = document.getElementById("profileImage");
+
+    upload.addEventListener("change", () => {
+      const file = upload.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = e => {
+          profileImage.src = e.target.result;
+          localStorage.setItem("profilePic", e.target.result);
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    // Load saved profile picture if exists
+    const savedPic = localStorage.getItem("profilePic");
+    if (savedPic) {
+      profileImage.src = savedPic;
+    }
+  </script>
+
+</body>
+</html>
