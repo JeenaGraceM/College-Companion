@@ -1,27 +1,34 @@
 // healthDashboard.js
+
+// Get the container where doctor entries will be displayed
 const container = document.getElementById('Entries');
 
+// Fetch all doctors and the current user, then render the list
 async function fetchEntries() {
-  try {       // User fetch (dummy user for now)
+  try {
+    // Fetch dummy user (student) info
     const userRes = await fetch('http://localhost:5000/api/dummy/user');
     if (!userRes.ok) throw new Error(`User fetch failed: ${userRes.status}`);
     const user = await userRes.json();
     console.log('Fetched user:', user);
 
-    // Fetch medical staff entries
+    // Fetch all medical staff (doctors)
     const res = await fetch('http://localhost:5000/api/medicalstaff');
     if (!res.ok) throw new Error('Failed to fetch entries');
     const entries = await res.json();
     console.log('Fetched entries:', entries);
 
+    // Render the doctor cards
     renderEntries(entries, user);
 
   } catch (error) {
+    // Show error if anything fails
     console.error('Error fetching entries:', error);
     container.innerHTML = '<p>Error loading entries. Please try again later.</p>';
   }
 }
 
+// Render doctor cards with booking button
 function renderEntries(entries, user) {
   container.innerHTML = '';
 
@@ -34,15 +41,17 @@ function renderEntries(entries, user) {
     const card = document.createElement('div');
     card.className = 'card';
 
+    // Doctor's name
     const h1 = document.createElement('h1');
-    h1.textContent = entry.name || 'Unnamed';
+    h1.textContent = entry.name;
 
+    // Doctor's specialization
     const h3 = document.createElement('h3');
-    h3.textContent = entry.specialization || 'General';
+    h3.textContent = entry.specialization;
 
+    // Doctor's contact info
     const ul = document.createElement('ul');
     ul.textContent = 'Contact:';
-    
     if (Array.isArray(entry.contact)) {
       entry.contact.forEach(c => {
         const li = document.createElement('li');
@@ -51,12 +60,13 @@ function renderEntries(entries, user) {
       });
     }
 
+    // Book Appointment button
     const button = document.createElement('button');
     button.textContent = 'Book Appointment';
     button.onclick = () => {
       try {
         if (!entry._id) throw new Error('Entry ID is missing');
-        // Pass doctorId + userId
+        // Redirect to appointment details page with doctorId and userId in URL
         window.location.href = `appointmentDetails.html?doctorId=${entry._id}&userId=${user._id}`;
       } catch (err) {
         console.error('Redirect Failed', err);
@@ -64,6 +74,7 @@ function renderEntries(entries, user) {
       }
     };
 
+    // Add all elements to card and card to container
     card.appendChild(h1);
     card.appendChild(h3);
     card.appendChild(ul);
@@ -72,4 +83,5 @@ function renderEntries(entries, user) {
   });
 }
 
+// Start fetching entries when script loads
 fetchEntries();

@@ -1,10 +1,13 @@
 // appointmentDetails.js
+
+// Get references to form and doctor name display
 const appointmentForm = document.getElementById('appointment_booking');
 const doctorName = document.getElementById('doctor-name');
-let selectedDate = null;
-let savedAppointments = {}; // { "YYYY-MM-DD": { tasks: [...], notes: "..." } }
-let leaveDates = [];
+let selectedDate = null; // Currently selected date for booking
+let savedAppointments = {}; // Booked slots by date: { "YYYY-MM-DD": { tasks: [...], notes: "..." } }
+let leaveDates = []; // Dates when doctor is on leave
 
+// Get doctorId and studentId from URL query params
 const params = new URLSearchParams(window.location.search);
 const doctorId = params.get('doctorId');
 const studentId = params.get('userId');
@@ -13,34 +16,37 @@ if (!doctorId || !studentId) {
   console.warn('Missing doctorId or userId in URL. Make sure healthDashboard passes them.');
 }
 
-// helper: convert "YYYY-MM-DD" to ISO midnight Z (safe)
+// Helper: convert "YYYY-MM-DD" to ISO string at midnight UTC
 function dateToIsoZ(dateStr) {
-  // treat as date only -> midnight UTC (server may convert to local)
   return new Date(dateStr + 'T00:00:00.000Z').toISOString();
 }
 
+// Fetch doctor, student, leave, and appointment details
 async function fetchDetails() {
   try {
-    if (!doctorId || !studentId) return; // nothing to do if missing
+    if (!doctorId || !studentId) return;
 
-    // Fetch student (optional local use)
-    const userRes = await fetch(`http://localhost:5000/api/users/${studentId}`);
-    if (!userRes.ok) throw new Error(`User fetch failed: ${userRes.status}`);
-    const user = await userRes.json();
-    console.log('Student:', user);
 
-    // Fetch doctor
+    // Fetch doctor info
     const doctorRes = await fetch(`http://localhost:5000/api/medicalstaff/${doctorId}`);
     if (!doctorRes.ok) throw new Error(`Doctor fetch failed: ${doctorRes.status}`);
     const doctor = await doctorRes.json();
     console.log('Doctor:', doctor);
 
+    // Fetch student info (optional, for local use)
+    const userRes = await fetch(`http://localhost:5000/api/dummy/user`);  // correct this part before finalising
+    if (!userRes.ok) throw new Error(`User fetch failed: ${userRes.status}`);
+    const user = await userRes.json();
+    console.log('Student:', user);
+
+    // Show doctor name and specialization
     doctorName.innerHTML = `<h2>Dr. ${doctor.name || ''}</h2><p>Specialization: ${doctor.specialization || ''}</p>`;
 
-    // Fetch leaves — handle both formats: array of strings or array of objects {date}
+    // Fetch doctor's leave dates
     const resLeaves = await fetch(`http://localhost:5000/api/leaves/doctor/${doctorId}`);
     if (resLeaves.ok) {
       const leaves = await resLeaves.json();
+      // Normalize leave dates to "YYYY-MM-DD"
       if (Array.isArray(leaves)) {
         leaveDates = leaves.map(l => (typeof l === 'string' ? l : (l.date || '').split('T')[0])).filter(Boolean);
       }
@@ -48,12 +54,12 @@ async function fetchDetails() {
       console.warn('Leaves fetch failed:', resLeaves.status);
     }
 
-    // Fetch doctor appointments
+    // Fetch doctor's existing appointments
     const resAppointment = await fetch(`http://localhost:5000/api/appointments/doctor/${doctorId}`);
     if (resAppointment.ok) {
       const appointments = await resAppointment.json();
       appointments.forEach(app => {
-        // convert appointment_date (ISO) -> YYYY-MM-DD
+        // Normalize appointment date to "YYYY-MM-DD"
         let dateKey = '';
         if (app.appointment_date) {
           dateKey = app.appointment_date.split('T')[0];
@@ -75,18 +81,19 @@ async function fetchDetails() {
   }
 }
 
+// Save new appointments for selected date and slots
 async function saveAppointments(date, slots, notes) {
   try {
-    // disable form while saving
+    // Disable submit button while saving
     const submitBtn = appointmentForm.querySelector('button[type="submit"]');
     if (submitBtn) submitBtn.disabled = true;
 
-    // POST one appointment per slot (server expects separate documents)
+    // POST one appointment per slot to server
     for (const slot of slots) {
       const payload = {
         doctor_id: doctorId,
         student_id: studentId,
-        appointment_date: dateToIsoZ(date), // ISO string midnight UTC for that date
+        appointment_date: dateToIsoZ(date),
         slot,
         notes: notes || ''
       };
@@ -101,10 +108,10 @@ async function saveAppointments(date, slots, notes) {
         const txt = await res.text().catch(() => '');
         throw new Error(`Failed to save slot ${slot}: ${res.status} ${txt}`);
       }
-      await res.json(); // ignore response body but wait for completion
+      await res.json(); // Wait for completion
     }
 
-    // update local state
+    // Update local state after saving
     if (!savedAppointments[date]) savedAppointments[date] = { tasks: [], notes: '' };
     savedAppointments[date].tasks.push(...slots);
     if (notes) savedAppointments[date].notes = notes;
@@ -114,14 +121,16 @@ async function saveAppointments(date, slots, notes) {
     console.error('Error saving appointments:', err);
     showMessage('Error saving appointment. The slot may have been taken. Try again.', 'error');
   } finally {
+    // Re-enable submit button
     const submitBtn = appointmentForm.querySelector('button[type="submit"]');
     if (submitBtn) submitBtn.disabled = false;
   }
 }
 
+// Generate events for calendar (booked and leave days)
 function generateCalendarEvents() {
   const events = [];
-  // booked days
+  // Add booked days
   Object.keys(savedAppointments).forEach(date => {
     const bookedCount = savedAppointments[date].tasks.length;
     events.push({
@@ -129,9 +138,8 @@ function generateCalendarEvents() {
       start: date
     });
   });
-  // leaves (push after so leaves may show differently in UI)
+  // Add leave days
   leaveDates.forEach(date => {
-    // if also booked, show combined title
     const isBooked = !!savedAppointments[date];
     events.push({
       title: isBooked ? `Leave & Booked (${savedAppointments[date].tasks.length})` : 'Doctor on Leave',
@@ -141,6 +149,7 @@ function generateCalendarEvents() {
   return events;
 }
 
+// Show popup for selecting slots on a date
 function showPopup(dateStr) {
   const popup = document.getElementById('popup');
   const dateTitle = document.getElementById('popup-date');
@@ -148,6 +157,7 @@ function showPopup(dateStr) {
 
   dateTitle.innerHTML = `Select appointment time <br><strong>${dateStr}</strong>`;
 
+  // List of possible slots
   const defaultTasks = [
     '11.00-11.30', '11.30-12.00', '12.00-12.30', '12.30-1.00',
     '2.00-2.30', '2.30-3.00', '3.00-3.30', '3.30-4.00',
@@ -155,6 +165,7 @@ function showPopup(dateStr) {
   ];
   const bookedTasks = savedAppointments[dateStr]?.tasks || [];
 
+  // Render checkboxes for slots, disable if already booked
   checkboxList.innerHTML = defaultTasks.map(task => {
     const isBooked = bookedTasks.includes(task);
     return `
@@ -168,12 +179,14 @@ function showPopup(dateStr) {
   popup.style.display = 'block';
 }
 
+// Hide the popup
 function closePopup() {
   const popup = document.getElementById('popup');
   if (popup) popup.style.display = 'none';
   selectedDate = null;
 }
 
+// Show a temporary message (success or error)
 function showMessage(message, type = 'success') {
   const msg = document.createElement('div');
   msg.textContent = message;
@@ -182,9 +195,11 @@ function showMessage(message, type = 'success') {
   setTimeout(() => msg.remove(), 3000);
 }
 
+// On page load, fetch details and set up calendar and form
 document.addEventListener('DOMContentLoaded', async () => {
   await fetchDetails();
 
+  // Set up the calendar UI
   const calendarEl = document.getElementById('calendar');
   const calendar = new FullCalendar.Calendar(calendarEl, {
     initialView: 'dayGridMonth',
@@ -203,7 +218,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
   calendar.render();
 
-  // handle submit (book appointment)
+  // Handle appointment form submission
   if (appointmentForm) {
     appointmentForm.addEventListener('submit', async (event) => {
       event.preventDefault();
@@ -220,7 +235,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
       }
 
-      // prevent double-booking client-side
+      // Prevent double-booking client-side
       const alreadyBooked = savedAppointments[selectedDate]?.tasks || [];
       const newTasks = tasks.filter(t => !alreadyBooked.includes(t));
       if (!newTasks.length) {
@@ -230,11 +245,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       await saveAppointments(selectedDate, newTasks, textarea?.value?.trim() || '');
 
-      // update calendar events
+      // Refresh calendar events after booking
       calendar.removeAllEvents();
       calendar.addEventSource(generateCalendarEvents());
 
-      // cleanup UI
+      // Clear form and close popup
       if (textarea) textarea.value = '';
       closePopup();
     });

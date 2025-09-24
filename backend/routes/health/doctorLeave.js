@@ -2,16 +2,29 @@ const express = require('express');
 const router = express.Router();
 const Leave = require('../../models/health/doctorLeave'); 
 
-// Get all leaves
+// ✅ Get all leaves
 router.get('/', async (req, res) => {
   try {
-    const leaves = await Leave.find().populate('doctorId', 'name specialization');
+    const leaves = await Leave.find();
     res.json(leaves);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
+// ✅ Get leaves for a specific doctor
+router.get('/doctor/:doctorId', async (req, res) => {
+  try {
+    const doctorLeaves = await Leave.find({ doctorId: req.params.doctorId });
+    res.json(doctorLeaves);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+module.exports = router;
+
+/*
 // Create a new leave
 router.post('/', async (req, res) => {
   try {
@@ -34,3 +47,4 @@ router.delete('/:id', async (req, res) => {
 });
 
 module.exports = router;
+*/

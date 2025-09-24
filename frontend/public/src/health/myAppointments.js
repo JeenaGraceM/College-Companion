@@ -1,13 +1,18 @@
 // myAppointments.js
-const container = document.getElementById('Entries');
 
+// Containers
+const upcomingContainer = document.getElementById('upcoming_appointments');
+const pastContainer = document.getElementById('past_appointments');
+
+// Main function to fetch and display appointments for the student
 async function fetchAppointmentsForStudent() {
   try {
-    // Try query param userId first (in case redirected)
+    // Get userId from URL query params (if redirected from another page)
     const params = new URLSearchParams(window.location.search);
     const userIdFromQuery = params.get('userId');
 
     let student;
+    // If userId is present in URL, fetch that user; else, fetch dummy user
     if (userIdFromQuery) {
       const userRes = await fetch(`http://localhost:5000/api/users/${userIdFromQuery}`);
       if (!userRes.ok) throw new Error(`User fetch failed: ${userRes.status}`);
@@ -19,73 +24,68 @@ async function fetchAppointmentsForStudent() {
     }
     console.log('Student:', student);
 
-    const res = await fetch(`http://localhost:5000/api/appointments/student/${student._id}`);
+    // ✅ FIX: use the correct backend route
+    const res = await fetch(`http://localhost:5000/api/appointments/users/${student._id}`);
     if (!res.ok) throw new Error(`Appointments fetch failed: ${res.status}`);
     const appointments = await res.json();
 
+    // If no appointments, show message
     if (!appointments || appointments.length === 0) {
-      container.innerHTML = '<p>No appointments found.</p>';
+      upcomingContainer.innerHTML = '<li>No upcoming appointments.</li>';
+      pastContainer.innerHTML = '<li>No past appointments.</li>';
       return;
     }
 
-    // For each appointment fetch doctor details (could be optimized server-side)
-    const doctorCache = {};
-    const enriched = await Promise.all(appointments.map(async (app) => {
-      const docId = app.doctor_id || app.doctorId || app.doctor;
-      if (!docId) return { app };
-      if (!doctorCache[docId]) {
-        try {
-          const dres = await fetch(`http://localhost:5000/api/medicalstaff/${docId}`);
-          if (dres.ok) doctorCache[docId] = await dres.json();
-          else doctorCache[docId] = null;
-        } catch (err) {
-          doctorCache[docId] = null;
-        }
-      }
-      return { app, doctor: doctorCache[docId] };
-    }));
+    // Split into upcoming & past
+    const now = new Date();
+    const upcoming = [];
+    const past = [];
 
-    renderAppointments(enriched, student);
+    appointments.forEach(app => {
+      const rawDate = app.appointment_date || app.date || app.appointmentDate;
+      const appDate = rawDate ? new Date(rawDate) : null;
+      if (appDate && appDate >= now) {
+        upcoming.push(app);
+      } else {
+        past.push(app);
+      }
+    });
+
+    // Render
+    renderAppointments(upcoming, upcomingContainer, "No upcoming appointments.");
+    renderAppointments(past, pastContainer, "No past appointments.");
   } catch (err) {
     console.error('Error loading appointments:', err);
-    container.innerHTML = '<p>Error loading appointments. Please try again later.</p>';
+    upcomingContainer.innerHTML = '<li>Error loading appointments.</li>';
+    pastContainer.innerHTML = '<li>Error loading appointments.</li>';
   }
 }
 
-function renderAppointments(list, student) {
+// Render appointment list items
+function renderAppointments(list, container, emptyMessage) {
   container.innerHTML = '';
-  list.forEach(item => {
-    const app = item.app;
-    const doctor = item.doctor;
-    const card = document.createElement('div');
-    card.className = 'card';
 
-    const h1 = document.createElement('h1');
-    h1.textContent = doctor ? `Dr. ${doctor.name}` : 'Doctor';
+  if (!list || list.length === 0) {
+    container.innerHTML = `<li>${emptyMessage}</li>`;
+    return;
+  }
 
-    const pDate = document.createElement('p');
-    // appointment_date could be ISO or date-only; normalize
+  list.forEach(app => {
+    const li = document.createElement('li');
+
     const rawDate = app.appointment_date || app.date || app.appointmentDate || '';
-    const displayDate = rawDate ? (rawDate.split('T')[0]) : (app.appointment_date || 'Unknown');
-    pDate.textContent = `Date: ${displayDate}`;
+    const displayDate = rawDate ? rawDate.split('T')[0] : 'Unknown';
 
-    const pSlot = document.createElement('p');
-    pSlot.textContent = `Slot: ${app.slot || app.tasks?.join(', ') || 'N/A'}`;
+    li.innerHTML = `
+      <strong>Doctor:</strong> ${app.doctor_id?.name || "N/A"} <br>
+      <strong>Date:</strong> ${displayDate} <br>
+      <strong>Slot:</strong> ${app.slot || 'N/A'} <br>
+      <strong>Status:</strong> ${app.status || 'Pending'}
+    `;
 
-    const pNotes = document.createElement('p');
-    pNotes.textContent = `Notes: ${app.notes || ''}`;
-
-    const pStatus = document.createElement('p');
-    pStatus.textContent = `Status: ${app.status || 'Pending'}`;
-
-    card.appendChild(h1);
-    card.appendChild(pDate);
-    card.appendChild(pSlot);
-    card.appendChild(pNotes);
-    card.appendChild(pStatus);
-
-    container.appendChild(card);
+    container.appendChild(li);
   });
 }
 
+// Start fetching appointments when script loads
 fetchAppointmentsForStudent();

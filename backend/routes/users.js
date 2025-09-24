@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const Appointment = require('../models/users');  // FIXED
+const Appointment = require('../models/users'); 
 
 // GET appointments for a specific student
 router.get('/student/:id', async (req, res) => {

@@ -2,6 +2,7 @@
 const express = require('express');
 const router = express.Router();
 const Appointment = require('../../models/health/appointments');
+/*
 
 // 📌 Get all appointments
 router.get('/', async (req, res) => {
@@ -15,9 +16,10 @@ router.get('/', async (req, res) => {
     res.status(500).send('Server Error');
   }
 });
+*/
 
 // 📌 Get appointments for a specific student
-router.get('/student/:id', async (req, res) => {
+router.get('/users/:id', async (req, res) => {
   try {
     const appointments = await Appointment.find({ student_id: req.params.id })
       .populate('doctor_id', 'name specialization')
