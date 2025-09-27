@@ -13,7 +13,7 @@ router.get('/', async (req, res) => {
 }); 
 
 router.get('/:doctorId', async (req, res) => {
-  const doctorId = req.params.doctorId;   // ✅ Correct
+  const doctorId = req.params.doctorId;   
   try {
     const doctor = await Doctor.findById(
       doctorId,
