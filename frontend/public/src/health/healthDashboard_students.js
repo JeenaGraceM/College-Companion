@@ -12,11 +12,11 @@ async function fetchEntries() {
     const user = await userRes.json();
     console.log('Fetched user:', user);
 
-    // Fetch all medical staff (doctors)
-    const res = await fetch('http://localhost:5000/api/medicalstaff');
+    // Fetch all doctors
+    const res = await fetch('http://localhost:5000/api/doctors');
     if (!res.ok) throw new Error('Failed to fetch entries');
     const entries = await res.json();
-    console.log('Fetched entries:', entries);
+    console.log('Fetched doctors:', entries);
 
     // Render the doctor cards
     renderEntries(entries, user);
@@ -33,7 +33,7 @@ function renderEntries(entries, user) {
   container.innerHTML = '';
 
   if (!entries || entries.length === 0) {
-    container.innerHTML = '<p>No entries available.</p>';
+    container.innerHTML = '<p>No doctors available.</p>';
     return;
   }
 
@@ -41,13 +41,13 @@ function renderEntries(entries, user) {
     const card = document.createElement('div');
     card.className = 'card';
 
-    // Doctor's name
+    // Doctor's name (backend may use fullName or name)
     const h1 = document.createElement('h1');
-    h1.textContent = entry.name;
+    h1.textContent = entry.fullName || entry.name || 'Unnamed Doctor';
 
     // Doctor's specialization
     const h3 = document.createElement('h3');
-    h3.textContent = entry.specialization;
+    h3.textContent = entry.specialization || 'Specialization not provided';
 
     // Doctor's contact info
     const ul = document.createElement('ul');
@@ -58,6 +58,10 @@ function renderEntries(entries, user) {
         li.textContent = `${c.type || 'tel'}: ${c.value || ''}`;
         ul.appendChild(li);
       });
+    } else if (entry.email) {
+      const li = document.createElement('li');
+      li.textContent = `email: ${entry.email}`;
+      ul.appendChild(li);
     }
 
     // Book Appointment button
@@ -65,7 +69,8 @@ function renderEntries(entries, user) {
     button.textContent = 'Book Appointment';
     button.onclick = () => {
       try {
-        if (!entry._id) throw new Error('Entry ID is missing');
+        if (!entry._id) throw new Error('Doctor ID is missing');
+        if (!user._id) throw new Error('User ID is missing');
         // Redirect to appointment details page with doctorId and userId in URL
         window.location.href = `appointmentDetails.html?doctorId=${entry._id}&userId=${user._id}`;
       } catch (err) {

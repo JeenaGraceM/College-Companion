@@ -23,8 +23,12 @@ app.use('/api/dummy',require('./routes/dummyRoutes_testing'));
 // Define routes and middleware
 app.use('/api/appointments', require('./routes/health/appointments'));
 app.use('/api/leaves', require('./routes/health/doctorLeave'));
-app.use('/api/medicalstaff', require('./routes/health/medicalStaff'));
+app.use('/api/doctors', require('./routes/health/doctors'));
 app.use('/api/users', require('./routes/users'));
+
+
+app.use('/api/medicalstaff', require('./routes/health/medicalStaff'));
+
 
 // Start the server
 const port = process.env.PORT || 5000;
