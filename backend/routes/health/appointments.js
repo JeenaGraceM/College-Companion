@@ -3,7 +3,7 @@ const express = require('express');
 const router = express.Router();
 const Appointment = require('../../models/health/appointments');
 
-/*
+
 //  Get appointments for a specific student
 router.get('/users/:id', async (req, res) => {
   try {
@@ -21,7 +21,7 @@ router.get('/users/:id', async (req, res) => {
     res.status(500).send('Server Error');
   }
 });
-*/
+
 router.get('/doctor/:doctorId', async (req, res) => {
   try {
     const doctorId = req.params.doctorId;
