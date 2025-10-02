@@ -2,6 +2,11 @@ const express = require('express');
 const router = express.Router();
 const Leave = require('../../models/health/doctorLeave'); 
 
+const authMiddleware = require('../../middleware/authMiddleware');
+
+// Protect all routes below
+router.use(authMiddleware);
+
 // ✅ Get all leaves
 router.get('/', async (req, res) => {
   try {

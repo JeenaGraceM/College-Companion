@@ -2,6 +2,11 @@
 const express = require('express');
 const router = express.Router();
 const Appointment = require('../../models/health/appointments');
+
+const authMiddleware = require('../../middleware/authMiddleware');
+
+// Protect all routes below
+router.use(authMiddleware);
 /*
 
 // 📌 Get all appointments
