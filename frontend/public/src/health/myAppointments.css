@@ -1,0 +1,59 @@
+body {
+  font-family: 'Segoe UI', sans-serif;
+  padding: 40px 20px;
+  background: #fffde7; /* Softer yellow for better contrast */
+  color: #333;
+}
+
+/* Heading */
+h1 {
+  color: #333;
+  margin-top: 40px;
+  font-size: 2rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* Ordered List */
+ol {
+  list-style: none;
+  padding: 0;
+  max-width: 600px;
+  margin: 30px auto;
+}
+
+/* List Items */
+li {
+  background: #ffffff;
+  margin-bottom: 16px;
+  padding: 20px 60px 20px 20px;
+  border-left: 6px solid #76d7d4;
+  border-radius: 8px;
+  position: relative;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  transition: box-shadow 0.3s ease;
+}
+
+li:hover {
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.1);
+}
+
+/* Button inside list item */
+li button {
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  background: #a18cd1;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+li button:hover {
+  background: #8668bd;
+}
