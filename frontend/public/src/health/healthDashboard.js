@@ -1,8 +1,5 @@
 const token = localStorage.getItem("token");
-if (!token) {
-  window.location.href = "../loginPage.html";
-}
-// ===== END NEW =====
+const user = JSON.parse(localStorage.getItem("user")); // ✅ read stored user
 
 // Get the container where doctor entries will be displayed
 const container = document.getElementById('Entries');
@@ -10,21 +7,8 @@ const container = document.getElementById('Entries');
 // Fetch all doctors and the current user, then render the list
 async function fetchEntries() {
   try {
-    // ===== NEW: Fetch real logged-in user using token =====
-    const userRes = await fetch('http://localhost:5000/api/auth/profile', {
-      headers: {
-        "Authorization": `Bearer ${token}`
-      }
-    });
-    if (!userRes.ok) {
-      // If token is invalid, redirect to login
-      localStorage.removeItem("token");
-      window.location.href = "../loginPage.html";
-      return;
-    }
-    const user = await userRes.json();
-    console.log('Fetched user:', user);
-    // ===== END NEW =====
+    // ✅ Use user directly from localStorage
+    console.log('Loaded user from localStorage:', user);
 
     // Fetch all doctors
     const res = await fetch('http://localhost:5000/api/doctors');
@@ -84,7 +68,7 @@ function renderEntries(entries, user) {
     button.onclick = () => {
       try {
         if (!entry._id) throw new Error('Doctor ID is missing');
-        if (!user._id) throw new Error('User ID is missing');
+        if (!user || !user._id) throw new Error('User ID is missing');
         // Redirect to appointment details page with doctorId and userId in URL
         window.location.href = `appointmentDetails.html?doctorId=${entry._id}&userId=${user._id}`;
       } catch (err) {

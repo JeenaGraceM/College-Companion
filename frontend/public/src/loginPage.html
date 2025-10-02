@@ -13,73 +13,54 @@
     <!-- LOGIN FORM -->
     <div id="login-form" class="form-container active">
       <div class="glass">
-        
-        <!-- Heading -->
         <h2>
           Hi, Welcome! <span style="font-size: 24px;">👋</span>
         </h2>
 
         <form id="loginForm">
-          <!-- Email -->
           <div>
             <input type="email" id="login-email" placeholder="Your email" required>
           </div>
-
-          <!-- Password -->
           <div class="password-container">
             <input type="password" id="login-password" placeholder="Password" required>
             <button type="button" id="togglePassword">👁</button>
           </div>
-
-          <!-- Remember + Forgot -->
           <div class="flex-between">
             <label class="checkbox-container">
               <input type="checkbox"> Remember me
             </label>
             <a href="#">Forgot password?</a>
           </div>
-
-          <!-- Log in Button -->
           <button type="button" id="login-btn">Log in</button>
         </form>
 
-        <!-- Spinner -->
         <div id="login-spinner" class="spinner" style="display:none;"></div>
 
         <p class="form-footer">
           Don't have an account?
           <a href="#" onclick="showSignup()">Sign up</a>
         </p>
-
       </div>
     </div>
 
     <!-- SIGNUP FORM -->
     <div id="signup-form" class="form-container">
       <div class="glass">
-        
         <h2>
           Create Account <span style="font-size: 24px;">✨</span>
         </h2>
 
         <form id="signupForm">
-          <!-- Full Name -->
           <div>
             <input type="text" id="signup-fullName" placeholder="Full Name" required>
           </div>
-
-          <!-- Date of Birth -->
           <div>
             <input type="date" id="signup-dob" required>
           </div>
-
-          <!-- Email -->
           <div>
             <input type="email" id="signup-email" placeholder="Your email" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
             title="Please enter a valid email (e.g., user@example.com)">
           </div>
-
-          <!-- Password -->
           <div>
             <input type="password" id="signup-password" placeholder="Password" required
               pattern="^(?=.*\d)(?=.*[!@#$%^&*]).{6,}$"
@@ -88,13 +69,9 @@
               - Contain 1 number 
               - Contain 1 special character (!@#$%^&*)">
           </div>
-
-          <!-- Confirm Password -->
           <div>
             <input type="password" id="signup-confirmPassword" placeholder="Confirm Password" required>
           </div>
-
-          <!-- Role -->
           <div>
             <select id="signup-role" required>
               <option value="" disabled selected>Select user type</option>
@@ -104,8 +81,6 @@
               <option value="doctor">Doctor</option>
             </select>
           </div>
-
-          <!-- Engineering Branch Dropdown -->
           <div>
             <select id="signup-branch" required>
               <option value="" disabled selected>Select Your Engineering Branch</option>
@@ -119,43 +94,36 @@
               <option value="nb">No Branch</option>
             </select>
           </div>
-
-          <!-- id Number -->
           <div>
             <input type="text" id="signup-rollNumber" placeholder="Roll Number/ id" required>
           </div>
-
-          <!-- Sign Up Button -->
           <button id="signup-btn" type="button">Sign Up</button>
         </form>
 
-        <!-- Spinner -->
         <div id="signup-spinner" class="spinner" style="display:none;"></div>
 
         <p class="form-footer">
           Already have an account?
           <a href="#" onclick="showLogin()">Log in</a>
         </p>
-
       </div>
     </div>
 
   </div>
 
-  <script>
-  const wrapper = document.getElementById("form-wrapper");
+<script>
+  // SHOW/HIDE forms
+  function showSignup() { document.getElementById("form-wrapper").classList.add("show-signup"); }
+  function showLogin() { document.getElementById("form-wrapper").classList.remove("show-signup"); }
 
-  function showSignup() { wrapper.classList.add("show-signup"); }
-  function showLogin() { wrapper.classList.remove("show-signup"); }
-
-  // Toggle password visibility
+  // PASSWORD TOGGLE
   document.getElementById("togglePassword").addEventListener("click", () => {
     const passwordField = document.getElementById("login-password");
     passwordField.type = passwordField.type === "password" ? "text" : "password";
   });
 
   // ---------------------
-  // Signup
+  // SIGNUP
   // ---------------------
   const signupButton = document.getElementById("signup-btn");
   const signupSpinner = document.getElementById("signup-spinner");
@@ -192,11 +160,24 @@
       signupSpinner.style.display = "none";
       signupButton.disabled = false;
 
+      console.log("Signup response:", data);
+
       if (res.ok) {
+        // Try different keys to get user info safely
+        const newUser = data.user || data.data || null;
+        if (!newUser) {
+          alert("User data not received from server. Cannot continue.");
+          return;
+        }
+
         alert(data.message);
+
+        if (data.token) localStorage.setItem("token", data.token);
+        localStorage.setItem("user", JSON.stringify(newUser));
+
         showLogin();
       } else {
-        alert(data.error);
+        alert(data.error || "Signup failed");
       }
     } catch (err) {
       signupSpinner.style.display = "none";
@@ -207,7 +188,7 @@
   });
 
   // ---------------------
-  // Login
+  // LOGIN
   // ---------------------
   const loginButton = document.getElementById("login-btn");
   const loginSpinner = document.getElementById("login-spinner");
@@ -231,12 +212,25 @@
       loginSpinner.style.display = "none";
       loginButton.disabled = false;
 
+      console.log("Login response:", data);
+
       if (res.ok) {
+        // Safely get user data from possible keys
+        const loggedInUser = data.user || data.data || null;
+        if (!loggedInUser) {
+          alert("User data not received from server. Cannot continue.");
+          return;
+        }
+
         alert(data.message);
-        localStorage.setItem("token", data.token);
+        alert(`Login successful! Welcome, ${loggedInUser.fullName || loggedInUser.email || ''}`);
+
+        if (data.token) localStorage.setItem("token", data.token);
+        localStorage.setItem("user", JSON.stringify(loggedInUser));
+
         window.location.href = "homePage.html";
       } else {
-        alert(data.error);
+        alert(data.error || "Login failed");
       }
     } catch (err) {
       loginSpinner.style.display = "none";
@@ -245,6 +239,20 @@
       alert("Server error. Try again later.");
     }
   });
+
+  // ---------------------
+  // GET LOGGED-IN USER DATA
+  // ---------------------
+  function getLoggedInUser() {
+    const userJSON = localStorage.getItem("user");
+    if (!userJSON) {
+      alert("No user is currently logged in.");
+      return null;
+    }
+    const user = JSON.parse(userJSON);
+    console.log("Logged-in user data:", user);
+    return user;
+  }
 </script>
 
 </body>
