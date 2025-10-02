@@ -1,4 +1,8 @@
-// healthDashboard.js
+const token = localStorage.getItem("token");
+if (!token) {
+  window.location.href = "../loginPage.html";
+}
+// ===== END NEW =====
 
 // Get the container where doctor entries will be displayed
 const container = document.getElementById('Entries');
@@ -6,11 +10,21 @@ const container = document.getElementById('Entries');
 // Fetch all doctors and the current user, then render the list
 async function fetchEntries() {
   try {
-    // Fetch dummy user (student) info
-    const userRes = await fetch('http://localhost:5000/api/dummy/user');
-    if (!userRes.ok) throw new Error(`User fetch failed: ${userRes.status}`);
+    // ===== NEW: Fetch real logged-in user using token =====
+    const userRes = await fetch('http://localhost:5000/api/auth/profile', {
+      headers: {
+        "Authorization": `Bearer ${token}`
+      }
+    });
+    if (!userRes.ok) {
+      // If token is invalid, redirect to login
+      localStorage.removeItem("token");
+      window.location.href = "../loginPage.html";
+      return;
+    }
     const user = await userRes.json();
     console.log('Fetched user:', user);
+    // ===== END NEW =====
 
     // Fetch all doctors
     const res = await fetch('http://localhost:5000/api/doctors');

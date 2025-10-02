@@ -1,6 +1,6 @@
 const express = require("express");
 const bcrypt = require("bcrypt");
-const User = require("../models/User");
+const User = require("../models/users");
 const generateToken = require("../utils/generateToken");
 const authenticateToken = require("../middleware/authMiddleware");
 

@@ -29,7 +29,7 @@ router.get('/doctor/:doctorId', async (req, res) => {
 
 module.exports = router;
 
-/*
+
 // Create a new leave
 router.post('/', async (req, res) => {
   try {
@@ -52,4 +52,3 @@ router.delete('/:id', async (req, res) => {
 });
 
 module.exports = router;
-*/
