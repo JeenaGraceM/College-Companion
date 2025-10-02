@@ -3,8 +3,27 @@ const express = require('express');
 const router = express.Router();
 const Appointment = require('../../models/health/appointments');
 
+const authMiddleware = require('../../middleware/authMiddleware');
 
-//  Get appointments for a specific student
+// Protect all routes below
+router.use(authMiddleware);
+/*
+
+// 📌 Get all appointments
+router.get('/', async (req, res) => {
+  try {
+    const appointments = await Appointment.find()
+      .populate('doctor_id', 'name specialization')
+      .populate('student_id', 'fullName rollNumber');
+    res.json(appointments);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
+*/
+
+// 📌 Get appointments for a specific student
 router.get('/users/:id', async (req, res) => {
   try {
     const appointments = await Appointment.find({ student_id: req.params.id })
@@ -22,21 +41,23 @@ router.get('/users/:id', async (req, res) => {
   }
 });
 
-router.get('/doctor/:doctorId', async (req, res) => {
+// 📌 Get appointments for a specific doctor
+router.get('/doctor/:id', async (req, res) => {
   try {
-    const doctorId = req.params.doctorId;
-    const appointments = await Appointment.find({ doctor_id: doctorId });
+    const appointments = await Appointment.find({ doctor_id: req.params.id })
+      .populate('doctor_id', 'name specialization')
+      .populate('student_id', 'fullName rollNumber');
 
-    if (!appointments || appointments.length === 0) {
-      return res.json([]); // ✅ safer: return empty array instead of 404
+    if (!appointments.length) {
+      return res.status(404).json({ message: 'No appointments found for this doctor' });
     }
 
     res.json(appointments);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error(err.message);
+    res.status(500).send('Server Error');
   }
 });
-
 
 // 📌 Create a new appointment
 router.post('/', async (req, res) => {

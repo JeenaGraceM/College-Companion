@@ -2,6 +2,11 @@ const express = require('express');
 const router = express.Router();
 const Leave = require('../../models/health/doctorLeave'); 
 
+const authMiddleware = require('../../middleware/authMiddleware');
+
+// Protect all routes below
+router.use(authMiddleware);
+
 // ✅ Get all leaves
 router.get('/', async (req, res) => {
   try {
@@ -24,7 +29,7 @@ router.get('/doctor/:doctorId', async (req, res) => {
 
 module.exports = router;
 
-
+/*
 // Create a new leave
 router.post('/', async (req, res) => {
   try {
@@ -47,3 +52,4 @@ router.delete('/:id', async (req, res) => {
 });
 
 module.exports = router;
+*/
