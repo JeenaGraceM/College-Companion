@@ -1,8 +1,23 @@
 const express = require('express');
 const router = express.Router();
-const Notes = require('../../models/notes&past_papers/notes'); // your schema for notes
+const multer = require('multer');
+const storage = require('../../config/gridFsStorage'); // GridFS storage
+const upload = multer({ storage });
+const mongoose = require('mongoose');
+const Grid = require('gridfs-stream');
+const Notes = require('../../models/notes&past_papers/notes'); // metadata schema
 
-// Get all notes
+// Initialize GridFS
+let gfs;
+const conn = mongoose.connection;
+conn.once('open', () => {
+  gfs = Grid(conn.db, mongoose.mongo);
+  gfs.collection('notes'); // bucket name
+});
+
+// ---------------------------
+// GET all notes metadata
+// ---------------------------
 router.get('/', async (req, res) => {
   try {
     const notes = await Notes.find().sort({ uploadDate: -1 });
@@ -13,7 +28,9 @@ router.get('/', async (req, res) => {
   }
 });
 
-// Get notes by semester or programme
+// ---------------------------
+// GET notes by filter (semester, programme, branch, year)
+// ---------------------------
 router.get('/filter', async (req, res) => {
   try {
     const { programme, semester, branch, year } = req.query;
@@ -32,33 +49,54 @@ router.get('/filter', async (req, res) => {
   }
 });
 
-// Create/upload a new note
-router.post('/', async (req, res) => {
+// ---------------------------
+// POST: Upload a file AND save metadata
+// ---------------------------
+router.post('/upload', upload.single('file'), async (req, res) => {
   try {
-    const { programme, course, branch, semester, year, fileName } = req.body;
+    const { programme, course, branch, semester, year } = req.body;
 
+    // Save metadata in Notes collection
     const newNote = new Notes({
-      programme: programme || "N/A",
-      course: course || "N/A",
-      branch: branch || "N/A",
+      programme: programme || 'N/A',
+      course: course || 'N/A',
+      branch: branch || 'N/A',
       semester,
       year,
-      fileName,
+      fileName: req.file.filename, // filename stored in GridFS
       uploadDate: new Date()
     });
 
     await newNote.save();
-    res.status(201).json(newNote);
+
+    res.status(201).json({
+      message: 'File uploaded and metadata saved successfully!',
+      file: req.file,
+      metadata: newNote
+    });
   } catch (err) {
     console.error(err.message);
     res.status(400).send('Server Error');
   }
 });
 
-// Delete a note by ID
+// ---------------------------
+// DELETE a note by ID (metadata)
+// ---------------------------
 router.delete('/:id', async (req, res) => {
   try {
+    const note = await Notes.findById(req.params.id);
+    if (!note) {
+      return res.status(404).json({ message: 'Note not found' });
+    }
+
+    // Optionally: remove file from GridFS
+    gfs.remove({ filename: note.fileName, root: 'notes' }, (err) => {
+      if (err) console.error('GridFS remove error:', err);
+    });
+
     await Notes.findByIdAndDelete(req.params.id);
+
     res.json({ message: 'Note deleted successfully' });
   } catch (err) {
     console.error(err.message);
