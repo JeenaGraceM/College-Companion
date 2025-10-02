@@ -24,6 +24,7 @@ console.log('MONGO_URI:', process.env.MONGO_URI);
 console.log('PORT:', process.env.PORT);
 
 // Define routes and middleware
+
 // Medical routes
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/appointments', require('./routes/health/appointments'));
@@ -34,6 +35,12 @@ app.use('/api/users', require('./routes/users'));
 
 // Announcements route
 app.use('/api/announcements', require('./routes/announcement'));
+
+// Notes routes
+app.use('/api/notes', require('./routes/notes')); // Make sure './routes/notes' exists
+
+// Past Papers routes
+app.use('/api/past_papers', require('./routes/past_papers')); // Make sure './routes/past_papers' exists
 
 // Root route
 app.get('/', (req, res) => {
