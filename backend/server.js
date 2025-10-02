@@ -17,18 +17,19 @@ console.log('PORT:', process.env.PORT);
 // Connect to MongoDB
 connectDB();
 
-const authMiddleware = require('./middleware/authMiddleware');
-app.use('/api/dummy',require('./routes/dummyRoutes_testing'));
+// Login Signup routes
+app.use('/api/auth', require('./routes/authRoutes')); 
 
-// Define routes and middleware
+// Medical routes
 app.use('/api/appointments', require('./routes/health/appointments'));
 app.use('/api/leaves', require('./routes/health/doctorLeave'));
-app.use('/api/doctors', require('./routes/health/doctors'));
+app.use('/api/medicalstaff', require('./routes/health/medicalStaff'));
 app.use('/api/users', require('./routes/users'));
 
-
-app.use('/api/medicalstaff', require('./routes/health/medicalStaff'));
-
+// Root route
+app.get('/', (req, res) => {
+  res.send('✅ API is running...');
+});
 
 // Start the server
 const port = process.env.PORT || 5000;
