@@ -19,36 +19,33 @@
           Hi, Welcome! <span style="font-size: 24px;">👋</span>
         </h2>
 
-        <!-- Email -->
-        <div>
-          <input type="email" id="login-email" placeholder="Your email" required>
-        </div>
+        <form id="loginForm">
+          <!-- Email -->
+          <div>
+            <input type="email" id="login-email" placeholder="Your email" required>
+          </div>
 
-        <!-- Password -->
-        <div class="password-container">
-          <input type="password" id="login-password" placeholder="Password" required>
-          <button type="button" id="togglePassword">👁</button>
-        </div>
+          <!-- Password -->
+          <div class="password-container">
+            <input type="password" id="login-password" placeholder="Password" required>
+            <button type="button" id="togglePassword">👁</button>
+          </div>
 
-        <!-- Remember + Forgot -->
-        <div class="flex-between">
-          <label class="checkbox-container">
-            <input type="checkbox">
-            Remember me
-          </label>
-          <a href="#">Forgot password?</a>
-        </div>
+          <!-- Remember + Forgot -->
+          <div class="flex-between">
+            <label class="checkbox-container">
+              <input type="checkbox"> Remember me
+            </label>
+            <a href="#">Forgot password?</a>
+          </div>
 
-        <!-- Log in Button -->
-        <button type="button" id="login-btn">
-          Log in
-        </button>
+          <!-- Log in Button -->
+          <button type="button" id="login-btn">Log in</button>
+        </form>
 
-        <!-- Inside login form -->
+        <!-- Spinner -->
         <div id="login-spinner" class="spinner" style="display:none;"></div>
 
-
-        <!-- Register -->
         <p class="form-footer">
           Don't have an account?
           <a href="#" onclick="showSignup()">Sign up</a>
@@ -65,79 +62,76 @@
           Create Account <span style="font-size: 24px;">✨</span>
         </h2>
 
-        <!-- Full Name -->
-        <div>
-          <input type="text" id="signup-fullName" placeholder="Full Name" required>
-        </div>
+        <form id="signupForm">
+          <!-- Full Name -->
+          <div>
+            <input type="text" id="signup-fullName" placeholder="Full Name" required>
+          </div>
 
-        <!-- Date of Birth -->
-        <div>
-          <input type="date" id="signup-dob" required>
-        </div>
+          <!-- Date of Birth -->
+          <div>
+            <input type="date" id="signup-dob" required>
+          </div>
 
-        <!-- Email -->
-        <div>
-          <input type="email" id="signup-email" placeholder="Your email" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
-          title="Please enter a valid email (e.g., user@example.com)">
-        </div>
+          <!-- Email -->
+          <div>
+            <input type="email" id="signup-email" placeholder="Your email" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+            title="Please enter a valid email (e.g., user@example.com)">
+          </div>
 
-        <!-- Password -->
-        <div>
-          <input type="password" id="signup-password" placeholder="Password" required
-            pattern="^(?=.*\d)(?=.*[!@#$%^&*]).{6,}$"
-            title="Password must: 
-            - Be 6+ characters 
-            - Contain 1 number 
-            - Contain 1 special character (!@#$%^&*)">
-        </div>
+          <!-- Password -->
+          <div>
+            <input type="password" id="signup-password" placeholder="Password" required
+              pattern="^(?=.*\d)(?=.*[!@#$%^&*]).{6,}$"
+              title="Password must: 
+              - Be 6+ characters 
+              - Contain 1 number 
+              - Contain 1 special character (!@#$%^&*)">
+          </div>
 
-        <!-- Confirm Password -->
-        <div>
-          <input type="password" id="signup-confirmPassword" placeholder="Confirm Password" required>
-        </div>
+          <!-- Confirm Password -->
+          <div>
+            <input type="password" id="signup-confirmPassword" placeholder="Confirm Password" required>
+          </div>
 
-        <!-- Role -->
-        <div>
-          <select id="signup-role" required>
-            <option value="" disabled selected>Select user type</option>
-            <option value="student">Student</option>
-            <option value="rep">Representative</option>
-            <option value="teacher">Teacher</option>
-            <option value="doctor">Doctor</option>
-          </select>
-        </div>
+          <!-- Role -->
+          <div>
+            <select id="signup-role" required>
+              <option value="" disabled selected>Select user type</option>
+              <option value="student">Student</option>
+              <option value="rep">Representative</option>
+              <option value="teacher">Teacher</option>
+              <option value="doctor">Doctor</option>
+            </select>
+          </div>
 
-        <!-- Engineering Branch Dropdown -->
-        <div>
-          <select id="signup-branch" required>
-            <option value="" disabled selected>Select Your Engineering Branch</option>
-            <option value="cse">Computer Science & Engineering</option>
-            <option value="ece">Electronics & Communication Engineering</option>
-            <option value="me">Mechanical Engineering</option>
-            <option value="ce">Civil Engineering</option>
-            <option value="ee">Electrical Engineering</option>
-            <option value="it">Information Technology</option>
-            <option value="ae">Automobile Engineering</option>
-            <option value="nb">No Branch</option>
-          </select>
-        </div>
+          <!-- Engineering Branch Dropdown -->
+          <div>
+            <select id="signup-branch" required>
+              <option value="" disabled selected>Select Your Engineering Branch</option>
+              <option value="cse">Computer Science & Engineering</option>
+              <option value="ece">Electronics & Communication Engineering</option>
+              <option value="me">Mechanical Engineering</option>
+              <option value="ce">Civil Engineering</option>
+              <option value="ee">Electrical Engineering</option>
+              <option value="it">Information Technology</option>
+              <option value="ae">Automobile Engineering</option>
+              <option value="nb">No Branch</option>
+            </select>
+          </div>
 
+          <!-- id Number -->
+          <div>
+            <input type="text" id="signup-rollNumber" placeholder="Roll Number/ id" required>
+          </div>
 
-        <!-- id Number -->
-        <div>
-          <input type="text" id="signup-rollNumber" placeholder="Roll Number/ id" required>
-        </div>
+          <!-- Sign Up Button -->
+          <button id="signup-btn" type="button">Sign Up</button>
+        </form>
 
-        <!-- Sign Up Button -->
-        <button id="signup-btn" type="button">
-          Sign Up
-        </button>
-
-        <!-- Inside signup form -->
+        <!-- Spinner -->
         <div id="signup-spinner" class="spinner" style="display:none;"></div>
 
-
-        <!-- Switch to Sign In -->
         <p class="form-footer">
           Already have an account?
           <a href="#" onclick="showLogin()">Log in</a>
@@ -252,7 +246,6 @@
     }
   });
 </script>
-
 
 </body>
 </html>
