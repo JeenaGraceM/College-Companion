@@ -80,7 +80,7 @@ header {
 }
 
 /* Appointments Button */
-#my_appointments {
+#my_appointments, #doctor_page {
   display: block;
   margin: 50px auto;
   padding: 16px 28px;
@@ -94,6 +94,6 @@ header {
   transition: background-color 0.3s ease;
 }
 
-#my_appointments:hover {
+#my_appointments:hover, #doctor_page:hover {
   background-color: #5e3f91;
 }

@@ -9,6 +9,21 @@ let leaveDates = []; // Dates when doctor is on leave
 let tempSelectedSlots = [];
 let calendar; // global calendar instance
 
+// --- Secure fetch helper (always include JWT token) ---
+async function authFetch(url, options = {}) {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    console.error("No token found in localStorage. User may not be logged in.");
+    throw new Error("Unauthorized - no token");
+  }
+  const headers = {
+    ...(options.headers || {}),
+    "Authorization": `Bearer ${token}`,
+    "Content-Type": "application/json"
+  };
+  return fetch(url, { ...options, headers });
+}
+
 // Get doctorId and studentId from URL query params
 const params = new URLSearchParams(window.location.search);
 const doctorId = params.get('doctorId');
@@ -23,52 +38,39 @@ function dateToIsoZ(dateStr) {
   return new Date(dateStr + 'T00:00:00.000Z').toISOString();
 }
 
-// Fetch doctor, student, leave, and appointment details
 // Fetch doctor, leave, and appointment details
 async function fetchDetails() {
   try {
     if (!doctorId || !studentId) return;
 
-    // Fetch doctor info
-    const doctorRes = await fetch(`http://localhost:5000/api/doctors/${doctorId}`);
+    // Doctor info
+    const doctorRes = await authFetch(`http://localhost:5000/api/doctors/${doctorId}`);
     if (!doctorRes.ok) throw new Error(`Doctor fetch failed: ${doctorRes.status}`);
     const doctor = await doctorRes.json();
-    console.log('Doctor:', doctor);
-
-    // Show doctor name and specialization
     doctorName.innerHTML = `<h2>${doctor.fullName || ''}</h2><p>Specialization: ${doctor.specialization || 'Not provided'}</p>`;
 
-    // Fetch doctor's leave dates
-    const resLeaves = await fetch(`http://localhost:5000/api/leaves/doctor/${doctorId}`);
+    // Doctor's leave dates
+    const resLeaves = await authFetch(`http://localhost:5000/api/leaves/doctor/${doctorId}`);
     if (resLeaves.ok) {
       const leaves = await resLeaves.json();
-      if (Array.isArray(leaves)) {
-        leaveDates = leaves
-          .map(l => (typeof l === 'string' ? l : (l.date || '').split('T')[0]))
-          .filter(Boolean);
-      }
-    } else {
-      console.warn('Leaves fetch failed:', resLeaves.status);
+      leaveDates = (Array.isArray(leaves) ? leaves : [])
+        .map(l => (typeof l === 'string' ? l : (l.date || '').split('T')[0]))
+        .filter(Boolean);
     }
 
-    // Fetch doctor's existing appointments
-    const resAppointment = await fetch(`http://localhost:5000/api/appointments/doctor/${doctorId}`);
+    // Doctor's existing appointments
+    const resAppointment = await authFetch(`http://localhost:5000/api/appointments/doctor/${doctorId}`);
     if (resAppointment.ok) {
       const appointments = await resAppointment.json();
       appointments.forEach(app => {
-        let dateKey = '';
-        if (app.appointment_date) {
-          dateKey = app.appointment_date.split('T')[0];
-        } else if (app.date) {
-          dateKey = app.date.split('T')[0];
-        }
+        let dateKey = app.appointment_date
+          ? app.appointment_date.split('T')[0]
+          : (app.date || '').split('T')[0];
         if (!dateKey) return;
         if (!savedAppointments[dateKey]) savedAppointments[dateKey] = { tasks: [], notes: '' };
         if (app.slot) savedAppointments[dateKey].tasks.push(app.slot);
         if (app.notes) savedAppointments[dateKey].notes = app.notes;
       });
-    } else {
-      console.warn('Appointments fetch failed:', resAppointment.status);
     }
 
     console.log('leaveDates:', leaveDates, 'savedAppointments:', savedAppointments);
@@ -92,9 +94,8 @@ async function saveAppointments(date, slots, notes) {
         notes: notes || ''
       };
 
-      const res = await fetch('http://localhost:5000/api/appointments', {
+      const res = await authFetch('http://localhost:5000/api/appointments', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       });
 
@@ -155,9 +156,9 @@ function showPopup(dateStr) {
   dateTitle.innerHTML = `Select appointment time <br><strong>${dateStr}</strong>`;
 
   const defaultTasks = [
-    '11.00-11.30', '11.30-12.00', '12.00-12.30', '12.30-1.00',
-    '2.00-2.30', '2.30-3.00', '3.00-3.30', '3.30-4.00',
-    '4.00-4.30', '4.30-5.00'
+    '11.00 am - 11.30 am', '11.30 am - 12.00 pm ', '12.00 pm - 12.30 pm', '12.30 pm - 1.00 pm ',
+    '2.00 pm - 2.30 pm', '2.30 pm - 3.00 pm', '3.00  pm - 3.30  pm', '3.30 pm - 4.00 pm',
+    '4.00  pm - 4.30 pm', '4.30 pm - 5.00 pm'
   ];
   const bookedTasks = savedAppointments[dateStr]?.tasks || [];
 
@@ -177,16 +178,14 @@ function showPopup(dateStr) {
 function closePopup() {
   const popup = document.getElementById('popup');
   if (popup) popup.style.display = 'none';
-  // Keep selectedDate until booking is done
 }
-
 
 function showBookingSuccess() {
   const modal = document.getElementById('booking-success');
   const goBtn = document.getElementById('go-dashboard');
   modal.style.display = 'flex';
   goBtn.onclick = () => {
-    window.location.href = `healthDashboard_students.html?userId=${studentId}`;
+    window.location.href = `healthDashboard.html`;
   };
 }
 
