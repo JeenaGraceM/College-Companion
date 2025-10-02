@@ -33,7 +33,7 @@ app.use('/api/users', require('./routes/users'));
 // app.use('/api/medicalstaff', require('./routes/health/medicalStaff'));
 
 // Announcements route
-app.use('/api/announcements', require('./routes/announcement'));
+app.use('/api/announcements', require('./routes/announcements/announcements'));
 
 // Root route
 app.get('/', (req, res) => {
