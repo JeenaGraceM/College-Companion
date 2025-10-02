@@ -1,4 +1,5 @@
 const express = require('express');
+
 const cors = require('cors');
 const dotenv = require('dotenv');
 const helmet = require('helmet');
@@ -34,13 +35,13 @@ app.use('/api/users', require('./routes/users'));
 // app.use('/api/medicalstaff', require('./routes/health/medicalStaff'));
 
 // Announcements route
-app.use('/api/announcements', require('./routes/announcement'));
+app.use('/api/announcements', require('./routes/announcement/announcement'));
 
 // Notes routes
-app.use('/api/notes', require('./routes/notes')); // Make sure './routes/notes' exists
+app.use('/api/notes', require('./routes/notes&past_papers/notes')); // Make sure './routes/notes' exists
 
 // Past Papers routes
-app.use('/api/past_papers', require('./routes/past_papers')); // Make sure './routes/past_papers' exists
+app.use('/api/past_papers', require('./routes/notes&past_papers/past_papers')); // Make sure './routes/past_papers' exists
 
 // Root route
 app.get('/', (req, res) => {

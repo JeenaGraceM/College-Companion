@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const Notes = require('../../models/notes'); // your schema for notes
+const Notes = require('../../models/notes&past_papers/notes'); // your schema for notes
 
 // Get all notes
 router.get('/', async (req, res) => {

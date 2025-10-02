@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const PastPaper = require('../../models/past_papers'); // your schema for past papers
+const PastPaper = require('../../models/notes&past_papers/past_papers'); // your schema for past papers
 
 // Get all past papers
 router.get('/', async (req, res) => {
