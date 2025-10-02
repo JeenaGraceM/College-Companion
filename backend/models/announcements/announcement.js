@@ -1,29 +1,31 @@
 const mongoose = require('mongoose');
 
-const announcementSchema = new mongoose.Schema({
+const AnnouncementSchema = new mongoose.Schema({
   title: {
     type: String,
-    required: true
+    required: true,
+    trim: true
   },
   content: {
     type: String,
     required: true
   },
-  postedBy: {
-    type: String, 
+  posted_by: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',   
     required: true
   },
-  class: {
+  posted_by_role: {
     type: String,
+    enum: ["student", "rep", "teacher", "professor", "doctor"],
     required: true
   },
   createdAt: {
     type: Date,
     default: Date.now
   }
-}, {
-  collection: 'announcements',
-  strict: true 
 });
 
-module.exports = mongoose.model('Announcement', announcementSchema);
+AnnouncementSchema.index({ posted_by: 1, createdAt: -1 });
+
+module.exports = mongoose.model('Announcement', AnnouncementSchema);
