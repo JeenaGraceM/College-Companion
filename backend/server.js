@@ -43,6 +43,13 @@ app.use('/api/notes', require('./routes/notes&past_papers/notes')); // Make sure
 // Past Papers routes
 app.use('/api/past_papers', require('./routes/notes&past_papers/past_papers')); // Make sure './routes/past_papers' exists
 
+
+// LostFound, Confessions, Polls routes
+app.use('/api/lostfound', require('./routes/confessions&polls/lostFound'));
+app.use('/api/confessions', require('./routes/confessions&polls/confessions'));
+app.use('/api/poll', require('./routes/confessions&polls/polls'));
+
+
 // Root route
 app.get('/', (req, res) => {
   res.send('API is running...');
