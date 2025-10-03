@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Doctor Dashboard</title>
+  <link rel="stylesheet" href="doctorDashboard.css" />
+</head>
+<body>
+  <header>
+    <h1>Doctor Dashboard</h1>
+  </header>
+
+  <!-- Doctor Profile -->
+  <section id="doctor_profile">
+    <h2>Profile</h2>
+    <p><strong>Name:</strong> <span id="doctor_name">Loading...</span></p>
+    <p><strong>Email:</strong> <span id="doctor_email">Loading...</span></p>
+    <p><strong>Specialization:</strong> <span id="doctor_specialization">Loading...</span></p>
+  </section>
+
+  <!-- Apply for Leave -->
+  <section id="doctor_leaves">
+    <h2>Apply for Leave</h2>
+    <form id="leaveForm">
+      <label for="leave_date">Leave Date:</label>
+      <input type="date" id="leave_date" name="leave_date" required />
+
+      <label for="reason">Reason:</label>
+      <input type="text" id="reason" name="reason" placeholder="Optional" />
+
+      <button type="submit">Submit Leave</button>
+    </form>
+
+    <h3>Your Leaves</h3>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Reason</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="leaveTableBody"></tbody>
+    </table>
+  </section>
+
+  <!-- Appointments -->
+  <section id="doctor_appointments">
+    <h2>Appointments</h2>
+    <h3>Upcoming</h3>
+    <ul id="upcoming_appointments"></ul>
+    <h3>Past</h3>
+    <ul id="past_appointments"></ul>
+  </section>
+
+  <script src="doctorDashboard.js"></script>
+</body>
+</html>

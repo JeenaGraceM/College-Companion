@@ -1,0 +1,124 @@
+/* General */
+body {
+  font-family: 'Roboto', sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #fffde7; /* Light pastel yellow */
+  color: #212121;
+}
+
+/* Header */
+header {
+  background-color: #c94f87; /* Rich pink */
+  color: #ffffff;
+  padding: 35px 20px;
+  text-align: center;
+  font-size: 2rem;
+  font-weight: 600;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Section Styling */
+section {
+  background: #ffffff;
+  margin: 30px auto;
+  padding: 24px;
+  max-width: 900px;
+  border-radius: 12px;
+  box-shadow: 0 6px 14px rgba(0,0,0,0.1);
+}
+
+section h2 {
+  font-size: 1.6rem;
+  color: #333;
+  margin-bottom: 16px;
+}
+
+/* Profile Section */
+#doctor_profile p {
+  font-size: 1rem;
+  margin: 6px 0;
+  color: #444;
+}
+
+/* Leave Form */
+#leave_form {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+#leave_form input[type="date"] {
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+}
+
+#leave_form button {
+  background-color: #4aa9a3;
+  color: #fff;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+#leave_form button:hover {
+  background-color: #5e3f91;
+}
+
+/* Leave List */
+#leave_list {
+  list-style: none;
+  padding: 0;
+}
+
+#leave_list li {
+  background: #f9f9f9;
+  padding: 10px 14px;
+  border-radius: 6px;
+  margin-bottom: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#leave_list li button {
+  background-color: #c94f87;
+  color: #fff;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+#leave_list li button:hover {
+  background-color: #4aa9a3;
+}
+
+/* Appointments */
+#upcoming_appointments, #past_appointments {
+  list-style: none;
+  padding: 0;
+}
+
+#upcoming_appointments li, #past_appointments li {
+  background: #f5f5f5;
+  padding: 12px 14px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+  font-size: 0.95rem;
+}
+
+/* Buttons for navigation */
+button {
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
