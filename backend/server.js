@@ -45,7 +45,7 @@ app.use('/api/past_papers', require('./routes/notes&past_papers/past_papers')); 
 
 // Root route
 app.get('/', (req, res) => {
-  res.send('✅ API is running...');
+  res.send('API is running...');
 });
 
 // 404 handler
