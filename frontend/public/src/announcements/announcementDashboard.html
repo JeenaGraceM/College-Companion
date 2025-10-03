@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html>
-
 <head>
     <title>Role-Based Dashboard</title>
     <style>
@@ -8,7 +7,7 @@
         body {
             font-family: Arial, sans-serif;
             margin: 0;
-            background-color: #FFE082; /* Soft yellow from palette */
+            background-color: #FFE082; /* Soft yellow */
             color: #333;
         }
 
@@ -25,6 +24,7 @@
         h2 {
             color: #444;
             margin-bottom: 10px;
+            text-align: center;
         }
 
         /* Section cards */
@@ -52,7 +52,7 @@
 
         /* Buttons */
         button {
-            background-color: #FF894F; /* Orange from palette */
+            background-color: #FF894F; /* Orange */
             color: white;
             border: none;
             padding: 10px 20px;
@@ -69,13 +69,25 @@
             background-color: #E57373; /* Pinkish red hover */
             transform: scale(1.05);
         }
+
+        input, textarea {
+            width: 95%;
+            padding: 8px;
+            margin: 5px 0;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            font-size: 1rem;
+        }
+
+        textarea {
+            resize: vertical;
+        }
     </style>
 </head>
-
 <body>
-
     <h1>College Companion Portal</h1>
 
+    <!-- Role selector -->
     <select id="roleSelect" onchange="loadDashboard()">
         <option value="">-- Select Role --</option>
         <option value="student">Student</option>
@@ -83,57 +95,96 @@
         <option value="teacher">Teacher</option>
     </select>
 
+    <!-- Dashboard -->
     <div id="dashboard"></div>
 
     <script>
-        // Simulated MongoDB Data
-        const announcements = [
-            { title: "Welcome", content: "Classes start next week", postedBy: "teacher", class: "CSE-A" },
-            { title: "Assignment Help", content: "Join the help session tomorrow", postedBy: "rep", class: "CSE-A" }
-        ];
+    const API_URL = "http://localhost:5000/api/announcements"; 
+    let currentUser = {
+        id: "689ae92cef93efa1a5eec4aa", // Example teacher/rep ID
+        role: ""
+    };
 
-        const materials = [
-            { title: "Unit 1 Notes", fileUrl: "unit1.pdf", uploadedBy: "teacher", class: "CSE-A" }
-        ];
-
-        function loadDashboard() {
-            const role = document.getElementById("roleSelect").value;
-            let html = `<h2 style="text-align:center;">${role.toUpperCase()} Dashboard</h2>`;
-
-            // Announcements
-            html += `<div class="section"><h3>Announcements</h3>`;
-            announcements.forEach(a => {
-                html += `<p><b>${a.title}</b>: ${a.content} (by ${a.postedBy})</p>`;
-            });
-            html += `</div>`;
-
-            // Course Materials
-            html += `<div class="section"><h3>Course Materials</h3>`;
-            materials.forEach(m => {
-                html += `<p>${m.title} - <a href="${m.fileUrl}" target="_blank">Download</a> (by ${m.uploadedBy})</p>`;
-            });
-            html += `</div>`;
-
-            // Rep Actions
-            if (role === "rep") {
-                html += `<div class="section"><h3>Rep Actions</h3>
-                    <button onclick="alert('Post Announcement')">Post Announcement</button>
-                    <button onclick="alert('Upload Material')">Upload Material</button>
-                </div>`;
+    // Load announcements from backend
+    async function loadAnnouncements() {
+        const res = await fetch(API_URL);
+        const data = await res.json();
+        let html = `<h3>Announcements</h3>`;
+        data.forEach(a => {
+            html += `<p><b>${a.title}</b>: ${a.content} (by ${a.posted_by?.fullName || a.posted_by_role})`;
+            if (a.fileUrl) {
+                html += ` - <a href="http://localhost:5000${a.fileUrl}" target="_blank">Download File</a>`;
             }
+            html += `</p>`;
+        });
+        document.getElementById("announcementsSection").innerHTML = html;
+    }
 
-            // Teacher Actions
-            if (role === "teacher") {
-                html += `<div class="section"><h3>Teacher Actions</h3>
-                    <button onclick="alert('Post Announcement')">Post Announcement</button>
-                    <button onclick="alert('Upload Course Material')">Upload Course Material</button>
-                    <button onclick="alert('View Engagement')">View Engagement</button>
-                </div>`;
-            }
+    // Post new announcement
+    async function postAnnouncement() {
+        const title = document.getElementById("title").value;
+        const content = document.getElementById("content").value;
+        const file = document.getElementById("fileUpload").files[0];
 
-            document.getElementById("dashboard").innerHTML = html;
+        const formData = new FormData();
+        formData.append("title", title);
+        formData.append("content", content);
+        formData.append("posted_by", currentUser.id);
+        formData.append("posted_by_role", currentUser.role);
+        if (file) formData.append("file", file);
+
+        const res = await fetch(API_URL, {
+            method: "POST",
+            body: formData
+        });
+
+        if (res.ok) {
+            alert("Announcement posted!");
+            loadAnnouncements();
+        } else {
+            alert("Error posting announcement");
         }
-    </script>
+    }
 
+    // Load dashboard UI
+    function loadDashboard() {
+        const role = document.getElementById("roleSelect").value;
+        currentUser.role = role;
+        if (!role) {
+            document.getElementById("dashboard").innerHTML = "";
+            return;
+        }
+
+        let html = `<h2>${role.toUpperCase()} Dashboard</h2>`;
+
+        // Announcements section
+        html += `<div class="section" id="announcementsSection"></div>`;
+
+        // Rep Actions
+        if (role === "rep") {
+            html += `<div class="section"><h3>Rep Actions</h3>
+                <input type="text" id="title" placeholder="Announcement Title" /><br>
+                <textarea id="content" placeholder="Write announcement..." rows="4"></textarea><br>
+                <input type="file" id="fileUpload" /><br><br>
+                <button onclick="postAnnouncement()">Post Announcement</button>
+            </div>`;
+        }
+
+        // Teacher Actions
+        if (role === "teacher") {
+            html += `<div class="section"><h3>Teacher Actions</h3>
+                <input type="text" id="title" placeholder="Announcement Title" /><br>
+                <textarea id="content" placeholder="Write announcement..." rows="4"></textarea><br>
+                <input type="file" id="fileUpload" /><br><br>
+                <button onclick="postAnnouncement()">Post Announcement</button>
+                <button onclick="alert('Engagement data will be shown here')">View Engagement</button>
+            </div>`;
+        }
+
+        document.getElementById("dashboard").innerHTML = html;
+        loadAnnouncements();
+    }
+
+    </script>
 </body>
 </html>
