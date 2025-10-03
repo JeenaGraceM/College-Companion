@@ -12,13 +12,17 @@ const AnnouncementSchema = new mongoose.Schema({
   },
   posted_by: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',   
+    ref: 'User',
     required: true
   },
   posted_by_role: {
     type: String,
     enum: ["student", "rep", "teacher", "professor", "doctor"],
     required: true
+  },
+  fileUrl: {
+    type: String, // stores GridFS file link
+    default: null
   },
   createdAt: {
     type: Date,
@@ -28,4 +32,4 @@ const AnnouncementSchema = new mongoose.Schema({
 
 AnnouncementSchema.index({ posted_by: 1, createdAt: -1 });
 
-module.exports = mongoose.model('Announcement', AnnouncementSchema);
+module.exports = mongoose.model('Announcement', AnnouncementSchema, 'announcements');

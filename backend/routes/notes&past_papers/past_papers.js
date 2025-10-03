@@ -1,18 +1,19 @@
 const express = require('express');
 const router = express.Router();
-const multer = require('multer');
-const storage = require('../../config/gridFsStorage'); // GridFS storage
-const upload = multer({ storage });
 const mongoose = require('mongoose');
 const Grid = require('gridfs-stream');
+const multer = require('multer');
+const createStorage = require('../../config/gridFsStorage'); // dynamic storage
 const PastPapers = require('../../models/notes&past_papers/past_papers'); // metadata schema
 
-// Initialize GridFS
+// Use GridFS bucket for past papers
+const upload = multer({ storage: createStorage('past_papers') });
+
 let gfs;
 const conn = mongoose.connection;
 conn.once('open', () => {
   gfs = Grid(conn.db, mongoose.mongo);
-  gfs.collection('past_papers'); // bucket name
+  gfs.collection('past_papers');
 });
 
 // ---------------------------
@@ -23,13 +24,12 @@ router.get('/', async (req, res) => {
     const papers = await PastPapers.find().sort({ uploadDate: -1 });
     res.json(papers);
   } catch (err) {
-    console.error(err.message);
     res.status(500).send('Server Error');
   }
 });
 
 // ---------------------------
-// GET past papers by filter (semester, programme, branch, year)
+// GET past papers by filter
 // ---------------------------
 router.get('/filter', async (req, res) => {
   try {
@@ -44,7 +44,6 @@ router.get('/filter', async (req, res) => {
     const papers = await PastPapers.find(filter).sort({ uploadDate: -1 });
     res.json(papers);
   } catch (err) {
-    console.error(err.message);
     res.status(500).send('Server Error');
   }
 });
@@ -56,14 +55,13 @@ router.post('/upload', upload.single('file'), async (req, res) => {
   try {
     const { programme, course, branch, semester, year } = req.body;
 
-    // Save metadata in PastPapers collection
     const newPaper = new PastPapers({
       programme: programme || 'N/A',
       course: course || 'N/A',
       branch: branch || 'N/A',
       semester,
       year,
-      fileName: req.file.filename, // filename stored in GridFS
+      fileName: req.file.filename,
       uploadDate: new Date()
     });
 
@@ -75,13 +73,12 @@ router.post('/upload', upload.single('file'), async (req, res) => {
       metadata: newPaper
     });
   } catch (err) {
-    console.error(err.message);
     res.status(400).send('Server Error');
   }
 });
 
 // ---------------------------
-// DELETE a past paper by ID (metadata)
+// DELETE a past paper by ID (metadata + GridFS)
 // ---------------------------
 router.delete('/:id', async (req, res) => {
   try {
@@ -90,16 +87,13 @@ router.delete('/:id', async (req, res) => {
       return res.status(404).json({ message: 'Past paper not found' });
     }
 
-    // Remove file from GridFS
     gfs.remove({ filename: paper.fileName, root: 'past_papers' }, (err) => {
       if (err) console.error('GridFS remove error:', err);
     });
 
     await PastPapers.findByIdAndDelete(req.params.id);
-
     res.json({ message: 'Past paper deleted successfully' });
   } catch (err) {
-    console.error(err.message);
     res.status(500).send('Server Error');
   }
 });
