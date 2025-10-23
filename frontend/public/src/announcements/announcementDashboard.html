@@ -99,92 +99,197 @@
     <div id="dashboard"></div>
 
     <script>
-    const API_URL = "http://localhost:5000/api/announcements"; 
-    let currentUser = {
-        id: "689ae92cef93efa1a5eec4aa", // Example teacher/rep ID
-        role: ""
-    };
+        const API_URL = "http://localhost:5000/api/announcements"; 
+        let currentUser = {
+            id: "689ae92cef93efa1a5eec4aa",
+            role: ""
+        };
 
-    // Load announcements from backend
-    async function loadAnnouncements() {
-        const res = await fetch(API_URL);
-        const data = await res.json();
-        let html = `<h3>Announcements</h3>`;
-        data.forEach(a => {
-            html += `<p><b>${a.title}</b>: ${a.content} (by ${a.posted_by?.fullName || a.posted_by_role})`;
-            if (a.fileUrl) {
-                html += ` - <a href="http://localhost:5000${a.fileUrl}" target="_blank">Download File</a>`;
+        // Load announcements from backend
+        async function loadAnnouncements() {
+            try {
+                const res = await fetch(API_URL);
+                if (!res.ok) {
+                    throw new Error(`HTTP error! status: ${res.status}`);
+                }
+                const data = await res.json();
+                let html = `<h3>Announcements</h3>`;
+                
+                if (data.length === 0) {
+                    html += `<p>No announcements yet.</p>`;
+                } else {
+                    data.forEach(a => {
+                        html += `<div style="border-bottom: 1px solid #eee; padding: 10px 0; margin-bottom: 15px;">
+                            <p style="margin: 5px 0;"><strong>${a.title}</strong></p>
+                            <p style="margin: 5px 0;">${a.content}</p>
+                            <p style="margin: 5px 0; color: #666; font-size: 0.9em;">
+                                Posted by: ${a.posted_by?.fullName || a.posted_by_role} 
+                                on ${new Date(a.createdAt).toLocaleString()}
+                            </p>`;
+                        
+                        if (a.fileUrl) {
+                            const fileUrl = `http://localhost:5000${a.fileUrl}`;
+                            html += `<p style="margin: 10px 0;">
+                                <a href="${fileUrl}" target="_blank" style="color: #2196F3; text-decoration: none; margin-right: 15px;">
+                                    📄 View PDF
+                                </a>
+                                <a href="${fileUrl}" download style="color: #4CAF50; text-decoration: none;">
+                                    ⬇️ Download PDF
+                                </a>
+                            </p>`;
+                        }
+                        html += `</div>`;
+                    });
+                }
+                document.getElementById("announcementsSection").innerHTML = html;
+            } catch (err) {
+                console.error('Error loading announcements:', err);
+                document.getElementById("announcementsSection").innerHTML = 
+                    `<p style="color: red;">Error loading announcements: ${err.message}</p>`;
             }
-            html += `</p>`;
-        });
-        document.getElementById("announcementsSection").innerHTML = html;
-    }
+        }
 
-    // Post new announcement
-    async function postAnnouncement() {
-        const title = document.getElementById("title").value;
-        const content = document.getElementById("content").value;
-        const file = document.getElementById("fileUpload").files[0];
+        // Post new announcement
+        async function postAnnouncement() {
+            const title = document.getElementById("title").value;
+            const content = document.getElementById("content").value;
+            const file = document.getElementById("fileUpload").files[0];
 
-        const formData = new FormData();
-        formData.append("title", title);
-        formData.append("content", content);
-        formData.append("posted_by", currentUser.id);
-        formData.append("posted_by_role", currentUser.role);
-        if (file) formData.append("file", file);
+            if (!title || !content) {
+                alert("Please fill in both title and content");
+                return;
+            }
 
-        const res = await fetch(API_URL, {
-            method: "POST",
-            body: formData
-        });
+            const formData = new FormData();
+            formData.append("title", title.trim());
+            formData.append("content", content.trim());
+            formData.append("posted_by", currentUser.id.trim());
+            formData.append("posted_by_role", currentUser.role.trim());
+            
+            if (file) {
+                if (file.type !== 'application/pdf') {
+                    alert("Please upload only PDF files");
+                    return;
+                }
+                formData.append("file", file);
+            }
 
-        if (res.ok) {
-            alert("Announcement posted!");
+            // Log FormData contents for debugging
+            console.log("FormData contents:");
+            for (let [key, value] of formData.entries()) {
+                console.log(key + ": " + (value instanceof File ? value.name : value));
+            }
+
+            try {
+                const res = await fetch(API_URL, {
+                    method: "POST",
+                    body: formData
+                    // Don't set Content-Type header for FormData - let browser set it automatically
+                });
+
+                console.log("Response status:", res.status);
+                
+                let result;
+                try {
+                    result = await res.json();
+                } catch (parseError) {
+                    console.error("Error parsing response:", parseError);
+                    throw new Error("Server returned invalid response");
+                }
+
+                if (res.ok) {
+                    alert("Announcement posted successfully!");
+                    // Clear form fields
+                    document.getElementById("title").value = "";
+                    document.getElementById("content").value = "";
+                    document.getElementById("fileUpload").value = "";
+                    // Reload announcements
+                    loadAnnouncements();
+                } else {
+                    console.error("Server error:", result);
+                    alert("Error posting announcement: " + (result.error || "Unknown error"));
+                }
+            } catch (err) {
+                console.error('Network error:', err);
+                alert("Network error: " + err.message);
+            }
+        }
+
+        // View engagement data (for teachers)
+        async function viewEngagement() {
+            try {
+                const res = await fetch(`${API_URL}/engagement`);
+                const data = await res.json();
+                
+                let html = `<h3>Engagement Data</h3>`;
+                html += `<p><strong>Total Announcements:</strong> ${data.totalAnnouncements}</p>`;
+                
+                html += `<p><strong>Announcements by Role:</strong></p>`;
+                html += `<ul>`;
+                data.announcementsByRole.forEach(role => {
+                    html += `<li>${role._id}: ${role.count}</li>`;
+                });
+                html += `</ul>`;
+                
+                html += `<p><strong>Recent Activity:</strong></p>`;
+                html += `<ul>`;
+                data.recentActivity.forEach(announcement => {
+                    html += `<li>${announcement.title} - by ${announcement.posted_by?.fullName || announcement.posted_by_role}</li>`;
+                });
+                html += `</ul>`;
+                
+                let engagementSection = document.getElementById("engagementSection");
+                if (!engagementSection) {
+                    engagementSection = document.createElement("div");
+                    engagementSection.id = "engagementSection";
+                    engagementSection.className = "section";
+                    document.getElementById("dashboard").appendChild(engagementSection);
+                }
+                engagementSection.innerHTML = html;
+                
+            } catch (err) {
+                console.error('Error loading engagement data:', err);
+                alert("Error loading engagement data");
+            }
+        }
+
+        // Load dashboard UI
+        function loadDashboard() {
+            const role = document.getElementById("roleSelect").value;
+            currentUser.role = role;
+            if (!role) {
+                document.getElementById("dashboard").innerHTML = "";
+                return;
+            }
+
+            let html = `<h2>${role.toUpperCase()} Dashboard</h2>`;
+
+            html += `<div class="section" id="announcementsSection"></div>`;
+
+            if (role === "rep") {
+                html += `<div class="section"><h3>Rep Actions</h3>
+                    <input type="text" id="title" placeholder="Announcement Title" /><br>
+                    <textarea id="content" placeholder="Write announcement..." rows="4"></textarea><br>
+                    <input type="file" id="fileUpload" accept=".pdf" /><br>
+                    <small>Only PDF files are allowed</small><br><br>
+                    <button onclick="postAnnouncement()">Post Announcement</button>
+                </div>`;
+            }
+
+            if (role === "teacher") {
+                html += `<div class="section"><h3>Teacher Actions</h3>
+                    <input type="text" id="title" placeholder="Announcement Title" /><br>
+                    <textarea id="content" placeholder="Write announcement..." rows="4"></textarea><br>
+                    <input type="file" id="fileUpload" accept=".pdf" /><br>
+                    <small>Only PDF files are allowed</small><br><br>
+                    <button onclick="postAnnouncement()">Post Announcement</button>
+                    <button onclick="viewEngagement()">View Engagement</button>
+                </div>`;
+            }
+
+            document.getElementById("dashboard").innerHTML = html;
             loadAnnouncements();
-        } else {
-            alert("Error posting announcement");
         }
-    }
-
-    // Load dashboard UI
-    function loadDashboard() {
-        const role = document.getElementById("roleSelect").value;
-        currentUser.role = role;
-        if (!role) {
-            document.getElementById("dashboard").innerHTML = "";
-            return;
-        }
-
-        let html = `<h2>${role.toUpperCase()} Dashboard</h2>`;
-
-        // Announcements section
-        html += `<div class="section" id="announcementsSection"></div>`;
-
-        // Rep Actions
-        if (role === "rep") {
-            html += `<div class="section"><h3>Rep Actions</h3>
-                <input type="text" id="title" placeholder="Announcement Title" /><br>
-                <textarea id="content" placeholder="Write announcement..." rows="4"></textarea><br>
-                <input type="file" id="fileUpload" /><br><br>
-                <button onclick="postAnnouncement()">Post Announcement</button>
-            </div>`;
-        }
-
-        // Teacher Actions
-        if (role === "teacher") {
-            html += `<div class="section"><h3>Teacher Actions</h3>
-                <input type="text" id="title" placeholder="Announcement Title" /><br>
-                <textarea id="content" placeholder="Write announcement..." rows="4"></textarea><br>
-                <input type="file" id="fileUpload" /><br><br>
-                <button onclick="postAnnouncement()">Post Announcement</button>
-                <button onclick="alert('Engagement data will be shown here')">View Engagement</button>
-            </div>`;
-        }
-
-        document.getElementById("dashboard").innerHTML = html;
-        loadAnnouncements();
-    }
-
     </script>
 </body>
 </html>

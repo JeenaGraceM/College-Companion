@@ -1,5 +1,4 @@
 const express = require('express');
-
 const cors = require('cors');
 const dotenv = require('dotenv');
 const helmet = require('helmet');
@@ -24,6 +23,10 @@ app.use(morgan('dev')); // Logs HTTP requests
 console.log('MONGO_URI:', process.env.MONGO_URI);
 console.log('PORT:', process.env.PORT);
 
+// IMPORT MODELS BEFORE ROUTES
+require('./models/users');
+require('./models/announcements/announcements');
+
 // Define routes and middleware
 
 // Medical routes
@@ -43,12 +46,10 @@ app.use('/api/notes', require('./routes/notes&past_papers/notes')); // Make sure
 // Past Papers routes
 app.use('/api/past_papers', require('./routes/notes&past_papers/past_papers')); // Make sure './routes/past_papers' exists
 
-
 // LostFound, Confessions, Polls routes
 app.use('/api/lostfound', require('./routes/confessions&polls/lostFound'));
 app.use('/api/confessions', require('./routes/confessions&polls/confessions'));
 app.use('/api/poll', require('./routes/confessions&polls/polls'));
-
 
 // Root route
 app.get('/', (req, res) => {
