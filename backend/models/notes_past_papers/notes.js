@@ -1,30 +1,42 @@
 const mongoose = require('mongoose');
 
-// Define schema
 const FileSchema = new mongoose.Schema({
   programme: {
     type: String,
-    default: "N/A",
+    required: true,
     trim: true
   },
   course: {
     type: String,
-    default: "N/A",
+    required: true,
     trim: true
   },
   branch: {
     type: String,
-    default: "N/A",
+    required: true,
     trim: true
   },
   semester: {
     type: Number,
     required: true
   },
+  year: {
+    type: String,
+    required: false
+  },
   fileName: {
     type: String,
     required: true,
     trim: true
+  },
+  originalName: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  fileSize: {
+    type: Number,
+    required: false
   },
   uploadDate: {
     type: Date,
@@ -32,8 +44,8 @@ const FileSchema = new mongoose.Schema({
   }
 });
 
-// Add an index for faster search (optional)
+// Add indexes for faster search
 FileSchema.index({ semester: 1, uploadDate: -1 });
+FileSchema.index({ programme: 1, branch: 1 });
 
-// Create model
 module.exports = mongoose.model('File', FileSchema);

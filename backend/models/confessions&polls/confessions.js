@@ -1,17 +1,18 @@
 const mongoose = require('mongoose');
 
 const ConfessionSchema = new mongoose.Schema({
-  // The anonymous content of the confession
   content: {
     type: String,
-    required: true,
+    required: [true, 'Confession content is required'],
     trim: true,
+    maxlength: [4000, 'Confession cannot exceed 4000 characters']
   },
-  // Timestamp for when the confession was created
   date: {
     type: Date,
     default: Date.now,
-  },
+  }
+}, {
+  timestamps: true
 });
 
 module.exports = mongoose.model('Confession', ConfessionSchema);
