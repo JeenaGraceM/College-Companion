@@ -1,78 +1,121 @@
-/**
- * Constructor function to represent an uploaded file.
- * 
- * @param {string} programme - Programme name (e.g., B.Tech, M.Sc.).
- * @param {string} course - Course name or subject.
- * @param {string} branch - Branch/department (e.g., CSE, ECE).
- * @param {number} semester - Semester number (1, 2, etc.).
- * @param {string} type - File type: "Notes" or "Past Papers".
- * @param {number|string} year - Year of the past paper (only if type is "Past Papers").
- * @param {string} fileName - Name of the uploaded file.
- */
-function UploadedFile(programme, course, branch, semester, type, year, fileName) {
-  this.programme = programme;
-  this.course = course;
-  this.branch = branch;
-  this.semester = semester;
-  this.type = type;
-  this.year = year || ""; // Optional field, defaults to empty if not provided
-  this.fileName = fileName;
-}
+document.getElementById('uploadForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
 
-/**
- * Handles the form submission for uploading files.
- * Prevents default form submission, collects data,
- * saves the file to the server, and updates the UI.
- * 
- * @param {Event} event - The form submit event.
- */
-function handleFormSubmit(event) {
-  event.preventDefault(); // Prevent the page from reloading
+      const programme = document.getElementById('programme').value;
+      const course = document.getElementById('course').value;
+      const branch = document.getElementById('branch').value;
+      const semester = document.getElementById('semester').value;
+      const fileType = document.getElementById('fileType').value;
+      const year = document.getElementById('year').value;
+      const fileInput = document.getElementById('fileInput');
 
-  // Collect input values from form fields
-  const programme = document.getElementById("programme").value.trim();
-  const course = document.getElementById("course").value.trim();
-  const branch = document.getElementById("branch").value.trim();
-  const semester = parseInt(document.getElementById("semester").value, 10);
-  const type = document.getElementById("fileType").value;
+      // Validate file selection
+      if (!fileInput.files.length) {
+        alert('❌ Please select a file.');
+        return;
+      }
 
-  // Year is only applicable if the file type is "Past Papers"
-  const year = (type === "Past Papers")
-    ? parseInt(document.getElementById("year").value, 10)
-    : "";
+      // Validate required fields
+      if (!programme || !course || !branch || !semester) {
+        alert('❌ Please fill all required fields: Programme, Course, Branch, and Semester');
+        return;
+      }
 
-  // Get the uploaded file's name
-  const fileInput = document.getElementById("fileInput").files[0];
-  const fileName = fileInput ? fileInput.name : "";
+      // Additional validation for past papers
+      if (fileType === 'Past Papers') {
+        if (!year) {
+          alert('❌ Please enter the year for past papers');
+          document.getElementById('year').focus();
+          return;
+        }
+        
+        // Validate year format (should be a number between 2000-2100)
+        const yearNum = parseInt(year);
+        if (isNaN(yearNum) || yearNum < 2000 || yearNum > 2100) {
+          alert('❌ Please enter a valid year between 2000 and 2100');
+          document.getElementById('year').focus();
+          return;
+        }
+      }
 
-  // Create a new UploadedFile object
-  const newFile = new UploadedFile(
-    programme, course, branch, semester, type, year, fileName
-  );
+      const formData = new FormData();
+      formData.append('file', fileInput.files[0]);
+      formData.append('programme', programme);
+      formData.append('course', course);
+      formData.append('branch', branch);
+      formData.append('semester', semester);
+      
+      // Only append year for past papers
+      if (fileType === 'Past Papers') {
+        formData.append('year', year);
+      }
 
-  // Add to our in-memory array of uploaded files
-  uploadedFiles.push(newFile);
+      try {
+        // Use the full backend URL
+        const baseURL = 'http://localhost:5000';
+        const endpoint = fileType === 'Notes' ? '/api/notes/upload' : '/api/past_papers/upload';
+        const url = baseURL + endpoint;
+        
+        console.log('📤 Uploading to:', url);
+        console.log('📊 FormData entries:');
+        for (let [key, value] of formData.entries()) {
+          console.log(`  ${key}:`, value);
+        }
 
-  // Save file to the server (mock async function)
-  saveFileToServer(newFile).then(() => {
-    alert("📤 File uploaded successfully!");
-    renderTables(); // Refresh the tables after upload
-  });
+        // Show loading state
+        const submitButton = e.target.querySelector('button[type="submit"]');
+        const originalText = submitButton.textContent;
+        submitButton.textContent = '📤 Uploading...';
+        submitButton.disabled = true;
 
-  // Reset the form for the next upload
-  event.target.reset();
+        const res = await fetch(url, { 
+          method: 'POST', 
+          body: formData 
+        });
 
-  // Hide/show year field depending on the file type
-  toggleYearField();
-}
+        console.log('📨 Response status:', res.status);
+        console.log('📨 Response status text:', res.statusText);
 
-/* ---------------- Event Listeners ---------------- */
+        if (!res.ok) {
+          const text = await res.text();
+          console.error('❌ Server response text:', text);
+          throw new Error(`Server returned ${res.status}: ${text}`);
+        }
 
-// Update year field visibility when file type changes
-document.getElementById("fileType").addEventListener("change", toggleYearField);
+        const data = await res.json();
+        console.log('📨 Parsed response data:', data);
 
-// Handle the upload form submission
-document.getElementById("uploadForm").addEventListener("submit", handleFormSubmit);
+        if (data.success) {
+          alert('✅ File uploaded successfully to MongoDB Atlas');
+          
+          // Clear the form
+          document.getElementById('uploadForm').reset();
+          document.getElementById('yearField').style.display = 'none';
+          
+          // Refresh the tables to show new data
+          await renderTables();
+        } else {
+          alert('❌ Upload failed: ' + (data.message || 'Unknown error'));
+        }
 
-// Initialize year field state on page load
-toggleYearField();
+      } catch (err) {
+        console.error('❌ Upload error:', err);
+        alert('❌ Upload failed: ' + err.message);
+      } finally {
+        // Reset button state
+        const submitButton = document.querySelector('#uploadForm button[type="submit"]');
+        if (submitButton) {
+          submitButton.textContent = '📤 Upload';
+          submitButton.disabled = false;
+        }
+      }
+    });
+
+    // Initialize the form when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+      // Add event listener to file type dropdown
+      document.getElementById('fileType').addEventListener('change', toggleYearField);
+      
+      // Initial render of tables
+      renderTables();
+    });

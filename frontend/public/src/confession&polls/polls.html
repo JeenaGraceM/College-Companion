@@ -3,49 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daily Polls</title>
-    <link rel="stylesheet" href="confessions.css">
+    <title>Daily Polls - Campus Connect</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <header>
         <h1>Campus Connect</h1>
         <nav class="navbar">
-            <a href="confessionsIndex.html">Lost & Found</a>
+            <a href="index.html">Home</a>
+            <a href="lostfound.html">Lost & Found</a>
             <a href="confessions.html">Confessions</a>
             <a href="polls.html">Daily Polls</a>
         </nav>
     </header>
 
     <div class="container">
-        <!-- Section for adding a new poll -->
-        <div class="form-section">
-            <h2>Create a New Poll</h2>
-            <form id="create-poll-form">
-                <label for="poll-question">Poll Question:</label>
-                <input type="text" id="poll-question" name="poll-question" placeholder="e.g., Should we have a quiz next week?" required>
-                
-                <label>Options:</label>
-                <div id="poll-options-container">
-                    <input type="text" class="poll-option-input" placeholder="Option 1" required>
-                    <input type="text" class="poll-option-input" placeholder="Option 2" required>
-                </div>
-                <button type="button" id="add-option-btn">Add Another Option</button>
-                <button type="submit">Create Poll</button>
-            </form>
-        </div>
-
-        <!-- Section for displaying the active poll -->
-        <div class="content-section" id="active-poll-section">
-            <h2>Active Poll</h2>
+        <div class="content-section">
+            <h2>Today's Poll</h2>
             <div id="poll-container">
-                <!-- The latest poll and voting form will be rendered here dynamically -->
-                <p>Loading the latest poll...</p>
+                <!-- Poll will be loaded here dynamically -->
             </div>
             <div id="poll-results-container" style="display:none;">
-                <!-- Poll results will be rendered here dynamically -->
+                <!-- Poll results will be shown here -->
             </div>
         </div>
     </div>
-    <script src="confessions.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>

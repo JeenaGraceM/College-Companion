@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lost & Found - Campus Connect</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>Campus Connect</h1>
+        <nav class="navbar">
+            <a href="index.html">Home</a>
+            <a href="lostfound.html">Lost & Found</a>
+            <a href="confessions.html">Confessions</a>
+            <a href="polls.html">Daily Polls</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <div class="form-section">
+            <h2>Submit a Lost or Found Item</h2>
+            <form id="lost-found-form">
+                <label for="item-type">I have:</label>
+                <select id="item-type" name="item-type" required>
+                    <option value="Lost">Lost an item</option>
+                    <option value="Found">Found an item</option>
+                </select>
+                
+                <label for="item-name">Item Name:</label>
+                <input type="text" id="item-name" name="item-name" required>
+                
+                <label for="description">Description:</label>
+                <textarea id="description" name="description" required></textarea>
+                
+                <label for="contact-info">Contact Information:</label>
+                <input type="text" id="contact-info" name="contact-info" placeholder="Email or Phone Number" required>
+                
+                <button type="submit">Submit</button>
+            </form>
+        </div>
+
+        <div class="content-section">
+            <h2>Recent Items</h2>
+            <div id="lost-found-container">
+                <!-- Items will be loaded here dynamically -->
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

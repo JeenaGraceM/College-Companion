@@ -56,7 +56,7 @@
     <!-- Year Field (Only shown if Past Papers is selected) -->
     <label id="yearField" style="display:none;">
       <span>📆 Year:</span>
-      <input type="number" id="year" min="2000" max="2100" />
+      <input type="number" id="year" min="2000" max="2100" required />
     </label>
 
     <!-- File Upload Input -->
@@ -68,6 +68,9 @@
     <!-- Submit Button -->
     <button type="submit">📤 Upload</button>
   </form>
+
+  <!-- Loading indicator -->
+  <div id="loading" style="display: none;">Loading data...</div>
 
   <!-- ============================= -->
   <!-- NOTES TABLE -->
@@ -113,9 +116,6 @@
   <!-- ============================= -->
   <!-- Utility Functions -->
   <script src="utils.js"></script>
-
-  <!-- API Calls to MongoDB -->
-  <script src="api.js"></script>
 
   <!-- Table Rendering Logic -->
   <script src="renderTables.js"></script>
