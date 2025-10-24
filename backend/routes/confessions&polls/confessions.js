@@ -5,63 +5,37 @@ const Confession = require('../../models/confessions&polls/confessions');
 // POST a new confession
 router.post('/', async (req, res) => {
   try {
-    console.log('Received confession POST request:', req.body);
+    console.log('Confession received:', req.body);
     
-    // Validate request body
-    if (!req.body || !req.body.content) {
-      return res.status(400).send({ 
-        message: 'Confession content is required' 
-      });
+    if (!req.body.content) {
+      return res.status(400).send({ message: 'Content is required' });
     }
-
-    const content = req.body.content.trim();
     
-    // Check if content is not empty after trimming
-    if (content === '') {
-      return res.status(400).send({ 
-        message: 'Confession content cannot be empty' 
-      });
-    }
-
-    // Check content length
-    if (content.length > 1000) {
-      return res.status(400).send({ 
-        message: 'Confession content must be less than 1000 characters' 
-      });
-    }
-
-    const newConfession = new Confession({ 
-      content: content 
-    });
+    const newConfession = new Confession({ content: req.body.content });
+    await newConfession.save();
     
-    const savedConfession = await newConfession.save();
-    console.log('Confession saved successfully:', savedConfession._id);
-    
-    res.status(201).send(savedConfession);
+    console.log('Confession saved:', newConfession);
+    res.status(201).send(newConfession);
   } catch (error) {
-    console.error('Error creating confession:', error);
-    res.status(400).send({ 
-      message: 'Failed to create confession',
-      error: error.message 
-    });
+    console.error('Confession POST error:', error);
+    res.status(400).send({ message: error.message });
   }
 });
 
 // GET latest 50 confessions
 router.get('/', async (req, res) => {
   try {
-    const confessions = await Confession.find()
-      .sort({ date: -1 })
-      .limit(50);
-    
+    const confessions = await Confession.find().sort({ date: -1 }).limit(50);
     res.status(200).send(confessions);
   } catch (error) {
-    console.error('Error fetching confessions:', error);
-    res.status(500).send({ 
-      message: 'Failed to fetch confessions',
-      error: error.message 
-    });
+    console.error('Confessions GET error:', error);
+    res.status(500).send({ message: 'Failed to fetch confessions.' });
   }
+});
+
+// GET test route
+router.get('/test', (req, res) => {
+  res.status(200).send({ message: 'Confessions route is working!' });
 });
 
 module.exports = router;

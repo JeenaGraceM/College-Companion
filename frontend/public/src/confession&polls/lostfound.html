@@ -4,22 +4,409 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lost & Found - Campus Connect</title>
-    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Base Styles */
+        :root {
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --success: #4cc9f0;
+            --danger: #f72585;
+            --warning: #f8961e;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --light-gray: #e9ecef;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fb;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        /* Header Styles */
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+        
+        .logo-icon {
+            font-size: 1.8rem;
+        }
+        
+        .navbar {
+            display: flex;
+            gap: 1.5rem;
+        }
+        
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        .navbar a:hover, .navbar a.active {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 2rem;
+        }
+        
+        /* Form Section */
+        .form-section {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+            height: fit-content;
+            position: sticky;
+            top: 2rem;
+        }
+        
+        .form-section h2 {
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid var(--light-gray);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .form-section h2 i {
+            color: var(--primary);
+        }
+        
+        form label {
+            display: block;
+            margin: 1rem 0 0.5rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        form input, form select, form textarea {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--light-gray);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border 0.3s, box-shadow 0.3s;
+        }
+        
+        form input:focus, form select:focus, form textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        }
+        
+        form textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        /* Image Upload */
+        .image-upload-section {
+            margin: 1.5rem 0;
+        }
+        
+        .file-input-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 0.5rem;
+        }
+        
+        #custom-upload-btn {
+            background-color: var(--light-gray);
+            color: var(--dark);
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.3s;
+        }
+        
+        #custom-upload-btn:hover {
+            background-color: #dde1e7;
+        }
+        
+        .image-preview-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 1rem;
+        }
+        
+        .image-preview-container img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 6px;
+            border: 1px solid var(--light-gray);
+        }
+        
+        /* Submit Button */
+        form button {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            padding: 0.9rem 1.5rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 1.5rem;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        form button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(67, 97, 238, 0.3);
+        }
+        
+        /* Content Section */
+        .content-section {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+        }
+        
+        .content-section h2 {
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid var(--light-gray);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        /* Filter Controls */
+        .filter-controls {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .filter-btn {
+            background: var(--light-gray);
+            border: none;
+            padding: 0.5rem 1.2rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        
+        .filter-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .search-box {
+            flex-grow: 1;
+            min-width: 200px;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 0.6rem 1rem;
+            border: 1px solid var(--light-gray);
+            border-radius: 20px;
+        }
+        
+        /* Lost & Found Items Grid */
+        .items-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .lost-found-item {
+            border: 1px solid var(--light-gray);
+            border-radius: 10px;
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+            background: white;
+        }
+        
+        .lost-found-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .item-image {
+            height: 180px;
+            width: 100%;
+            background-color: var(--light-gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gray);
+            font-size: 3rem;
+        }
+        
+        .item-details {
+            padding: 1.5rem;
+        }
+        
+        .item-type {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 0.8rem;
+        }
+        
+        .item-type.lost {
+            background-color: rgba(247, 37, 133, 0.1);
+            color: var(--danger);
+        }
+        
+        .item-type.found {
+            background-color: rgba(76, 201, 240, 0.1);
+            color: var(--success);
+        }
+        
+        .item-name {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+        }
+        
+        .item-description {
+            color: var(--gray);
+            margin-bottom: 1rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .item-contact {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--primary);
+            font-weight: 500;
+            margin-bottom: 0.8rem;
+        }
+        
+        .item-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+            padding-top: 0.8rem;
+            border-top: 1px solid var(--light-gray);
+            font-size: 0.85rem;
+            color: var(--gray);
+        }
+        
+        .no-items {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 3rem;
+            color: var(--gray);
+        }
+        
+        .no-items i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--light-gray);
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 900px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-section {
+                position: static;
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .navbar {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .items-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <header>
-        <h1>Campus Connect</h1>
-        <nav class="navbar">
-            <a href="index.html">Home</a>
-            <a href="lostfound.html">Lost & Found</a>
-            <a href="confessions.html">Confessions</a>
-            <a href="polls.html">Daily Polls</a>
-        </nav>
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-university logo-icon"></i>
+                <h1>Campus Connect</h1>
+            </div>
+            <nav class="navbar">
+                <a href="lostFound.html" class="active"><i class="fas fa-search"></i> Lost & Found</a>
+                <a href="confessions.html"><i class="fas fa-user-secret"></i> Confessions</a>
+                <a href="polls.html"><i class="fas fa-poll"></i> Daily Polls</a>
+            </nav>
+        </div>
     </header>
 
     <div class="container">
         <div class="form-section">
-            <h2>Submit a Lost or Found Item</h2>
+            <h2><i class="fas fa-plus-circle"></i> Report an Item</h2>
             <form id="lost-found-form">
                 <label for="item-type">I have:</label>
                 <select id="item-type" name="item-type" required>
@@ -28,25 +415,313 @@
                 </select>
                 
                 <label for="item-name">Item Name:</label>
-                <input type="text" id="item-name" name="item-name" required>
+                <input type="text" id="item-name" name="item-name" placeholder="e.g., Black Water Bottle, Calculus Textbook" required>
                 
                 <label for="description">Description:</label>
-                <textarea id="description" name="description" required></textarea>
+                <textarea id="description" name="description" placeholder="Provide details about the item (color, brand, distinctive features, location found/lost)" required></textarea>
                 
+                <div class="image-upload-section">
+                    <label for="item-images">Upload Pictures (up to 5):</label>
+                    <div class="file-input-container">
+                        <input type="file" id="item-images" name="item-images" accept="image/*" multiple style="display:none;">
+                        <button type="button" id="custom-upload-btn"><i class="fas fa-cloud-upload-alt"></i> Choose Files</button>
+                        <span id="file-count">No files selected</span>
+                    </div>
+                    <div id="image-preview-container" class="image-preview-container"></div>
+                </div>
+
                 <label for="contact-info">Contact Information:</label>
                 <input type="text" id="contact-info" name="contact-info" placeholder="Email or Phone Number" required>
                 
-                <button type="submit">Submit</button>
+                <button type="submit"><i class="fas fa-paper-plane"></i> Submit Report</button>
             </form>
         </div>
 
         <div class="content-section">
-            <h2>Recent Items</h2>
-            <div id="lost-found-container">
-                <!-- Items will be loaded here dynamically -->
+            <h2><i class="fas fa-list"></i> Recent Items</h2>
+            
+            <div class="filter-controls">
+                <button class="filter-btn active" data-filter="all">All Items</button>
+                <button class="filter-btn" data-filter="Lost">Lost Items</button>
+                <button class="filter-btn" data-filter="Found">Found Items</button>
+                <div class="search-box">
+                    <input type="text" id="search-input" placeholder="Search items...">
+                </div>
+            </div>
+            
+            <div id="lost-found-container" class="items-grid">
+                <!-- Items will be loaded dynamically here -->
+                <div class="no-items">
+                    <i class="fas fa-search"></i>
+                    <h3>No items to display</h3>
+                    <p>Be the first to report a lost or found item!</p>
+                </div>
             </div>
         </div>
     </div>
-    <script src="script.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // DOM Elements
+            const lostFoundForm = document.getElementById('lost-found-form');
+            const lostFoundContainer = document.getElementById('lost-found-container');
+            const itemImagesInput = document.getElementById('item-images');
+            const customUploadBtn = document.getElementById('custom-upload-btn');
+            const imagePreviewContainer = document.getElementById('image-preview-container');
+            const fileCount = document.getElementById('file-count');
+            const filterBtns = document.querySelectorAll('.filter-btn');
+            const searchInput = document.getElementById('search-input');
+            
+            // Sample data for demonstration
+            const sampleItems = [
+                {
+                    id: 1,
+                    itemType: 'Lost',
+                    itemName: 'Black Water Bottle',
+                    description: 'Hydro Flask 32oz, black matte finish, has a small dent on the bottom. Lost near the library.',
+                    contactInfo: 'john.doe@example.com',
+                    status: 'Pending',
+                    createdAt: new Date('2023-10-15'),
+                    imageUrls: []
+                },
+                {
+                    id: 2,
+                    itemType: 'Found',
+                    itemName: 'Calculus Textbook',
+                    description: 'Found in the student lounge. Calculus: Early Transcendentals, 3rd edition. Has notes in margins.',
+                    contactInfo: 'sarah.wilson@example.com',
+                    status: 'Pending',
+                    createdAt: new Date('2023-10-14'),
+                    imageUrls: []
+                },
+                {
+                    id: 3,
+                    itemType: 'Lost',
+                    itemName: 'Wireless Earbuds',
+                    description: 'Apple AirPods Pro in a white case. Lost during the football game yesterday.',
+                    contactInfo: 'mike.johnson@example.com',
+                    status: 'Pending',
+                    createdAt: new Date('2023-10-13'),
+                    imageUrls: []
+                },
+                {
+                    id: 4,
+                    itemType: 'Found',
+                    itemName: 'Student ID Card',
+                    description: 'Found near the cafeteria. Name: Emily Rodriguez, ID: 789123.',
+                    contactInfo: 'campus-security@example.com',
+                    status: 'Resolved',
+                    createdAt: new Date('2023-10-12'),
+                    imageUrls: []
+                }
+            ];
+            
+            let currentItems = [...sampleItems];
+            let currentFilter = 'all';
+            let currentSearch = '';
+            
+            // Image upload handling
+            if (customUploadBtn) {
+                customUploadBtn.addEventListener('click', () => {
+                    itemImagesInput.click();
+                });
+            }
+            
+            if (itemImagesInput) {
+                itemImagesInput.addEventListener('change', (event) => {
+                    imagePreviewContainer.innerHTML = '';
+                    const files = event.target.files;
+                    
+                    if (files.length > 5) {
+                        alert('You can only upload a maximum of 5 images.');
+                        event.target.value = '';
+                        fileCount.textContent = 'No files selected';
+                        return;
+                    }
+                    
+                    fileCount.textContent = `${files.length} file(s) selected`;
+                    
+                    for (const file of files) {
+                        if (file.type.startsWith('image/')) {
+                            const reader = new FileReader();
+                            reader.onload = (e) => {
+                                const img = document.createElement('img');
+                                img.src = e.target.result;
+                                img.alt = file.name;
+                                imagePreviewContainer.appendChild(img);
+                            };
+                            reader.readAsDataURL(file);
+                        }
+                    }
+                });
+            }
+            
+            // Filter buttons event listeners
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    filterBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentFilter = btn.getAttribute('data-filter');
+                    filterAndRenderItems();
+                });
+            });
+            
+            // Search input event listener
+            searchInput.addEventListener('input', (e) => {
+                currentSearch = e.target.value.toLowerCase();
+                filterAndRenderItems();
+            });
+            
+            // FORM SUBMISSION
+            if (lostFoundForm) {
+                lostFoundForm.addEventListener('submit', async (event) => {
+                    event.preventDefault();
+                    
+                    // Get form data
+                    const formData = {
+                        itemType: document.getElementById('item-type').value,
+                        itemName: document.getElementById('item-name').value,
+                        description: document.getElementById('description').value,
+                        contactInfo: document.getElementById('contact-info').value,
+                        imageUrls: [] // For now, we'll handle images later
+                    };
+                    
+                    console.log('Sending to server:', formData);
+                    
+                    // For demo purposes, we'll add the item locally
+                    const newItem = {
+                        id: currentItems.length + 1,
+                        ...formData,
+                        status: 'Pending',
+                        createdAt: new Date(),
+                        imageUrls: []
+                    };
+                    
+                    currentItems.unshift(newItem);
+                    filterAndRenderItems();
+                    
+                    // Show success message
+                    alert('Item submitted successfully!');
+                    lostFoundForm.reset();
+                    imagePreviewContainer.innerHTML = '';
+                    fileCount.textContent = 'No files selected';
+                    
+                    // In a real application, you would send to the server:
+                    /*
+                    try {
+                        const response = await fetch('http://localhost:5000/api/lostfound', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify(formData)
+                        });
+                        
+                        if (response.ok) {
+                            const result = await response.json();
+                            alert('Item submitted successfully!');
+                            lostFoundForm.reset();
+                            imagePreviewContainer.innerHTML = '';
+                            loadLostFoundItems(); // Refresh the list
+                        } else {
+                            const error = await response.json();
+                            alert('Error: ' + error.message);
+                        }
+                    } catch (error) {
+                        console.error('Error:', error);
+                        alert('Failed to submit item. Please check if the server is running.');
+                    }
+                    */
+                });
+            }
+            
+            // Function to filter and render items
+            function filterAndRenderItems() {
+                let filteredItems = [...currentItems];
+                
+                // Apply type filter
+                if (currentFilter !== 'all') {
+                    filteredItems = filteredItems.filter(item => item.itemType === currentFilter);
+                }
+                
+                // Apply search filter
+                if (currentSearch) {
+                    filteredItems = filteredItems.filter(item => 
+                        item.itemName.toLowerCase().includes(currentSearch) || 
+                        item.description.toLowerCase().includes(currentSearch)
+                    );
+                }
+                
+                // Render items
+                displayLostFoundItems(filteredItems);
+            }
+            
+            // Function to display items
+            function displayLostFoundItems(items) {
+                if (!lostFoundContainer) return;
+                
+                if (items.length === 0) {
+                    lostFoundContainer.innerHTML = `
+                        <div class="no-items">
+                            <i class="fas fa-search"></i>
+                            <h3>No items found</h3>
+                            <p>Try adjusting your search or filter criteria</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                lostFoundContainer.innerHTML = '';
+                
+                items.forEach(item => {
+                    const itemElement = document.createElement('div');
+                    itemElement.className = 'lost-found-item';
+                    
+                    // Determine icon based on item type
+                    const icon = item.itemType === 'Lost' ? 'fa-exclamation-circle' : 'fa-check-circle';
+                    
+                    itemElement.innerHTML = `
+                        <div class="item-image">
+                            <i class="fas ${icon}"></i>
+                        </div>
+                        <div class="item-details">
+                            <span class="item-type ${item.itemType.toLowerCase()}">${item.itemType}</span>
+                            <h3 class="item-name">${item.itemName}</h3>
+                            <p class="item-description">${item.description}</p>
+                            <div class="item-contact">
+                                <i class="fas fa-envelope"></i>
+                                <span>${item.contactInfo}</span>
+                            </div>
+                            <div class="item-footer">
+                                <span>Status: ${item.status}</span>
+                                <span>${formatDate(item.createdAt)}</span>
+                            </div>
+                        </div>
+                    `;
+                    lostFoundContainer.appendChild(itemElement);
+                });
+            }
+            
+            // Helper function to format dates
+            function formatDate(date) {
+                const now = new Date();
+                const diffTime = now - date;
+                const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+                
+                if (diffDays === 0) {
+                    return 'Today';
+                } else if (diffDays === 1) {
+                    return 'Yesterday';
+                } else if (diffDays < 7) {
+                    return `${diffDays} days ago`;
+                } else {
+                    return date.toLocaleDateString();
+                }
+            }
+            
+            // Initial load of items
+            filterAndRenderItems();
+        });
+    </script>
 </body>
 </html>

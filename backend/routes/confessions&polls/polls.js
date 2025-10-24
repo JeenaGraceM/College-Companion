@@ -9,7 +9,7 @@ router.get('/daily', async (req, res) => {
     if (!poll) return res.status(404).send({ message: 'No poll available.' });
     res.status(200).send(poll);
   } catch (error) {
-    console.error(error);
+    console.error('Polls GET error:', error);
     res.status(500).send({ message: 'Failed to fetch poll.' });
   }
 });
@@ -34,9 +34,36 @@ router.post('/vote/:pollId', async (req, res) => {
     await poll.save();
     res.status(200).send(poll);
   } catch (error) {
-    console.error(error);
+    console.error('Vote POST error:', error);
     res.status(500).send({ message: 'Failed to record vote.' });
   }
+});
+
+// POST create a new poll
+router.post('/', async (req, res) => {
+  try {
+    const { question, options } = req.body;
+    
+    if (!question || !options || options.length < 2) {
+      return res.status(400).send({ message: 'Question and at least 2 options are required' });
+    }
+
+    const newPoll = new Poll({
+      question,
+      options: options.map(opt => ({ text: opt.text, votes: 0 }))
+    });
+
+    await newPoll.save();
+    res.status(201).send(newPoll);
+  } catch (error) {
+    console.error('Create poll error:', error);
+    res.status(400).send({ message: error.message });
+  }
+});
+
+// GET test route
+router.get('/test', (req, res) => {
+  res.status(200).send({ message: 'Polls route is working!' });
 });
 
 module.exports = router;
